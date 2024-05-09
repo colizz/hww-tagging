@@ -1,0 +1,2 @@
+# cmsDriver command
+cmsDriver.py  --python_filename HIG-Run3Summer22DRPremix-00166_2_cfg.py --eventcontent AODSIM --customise Configuration/DataProcessing/Utils.addMonitoring --datatier AODSIM --fileout file:HIG-Run3Summer22DRPremix-00166.root --conditions 124X_mcRun3_2022_realistic_v12 --step RAW2DIGI,L1Reco,RECO,RECOSIM --procModifiers siPixelQualityRawToDigi --geometry DB:Extended --filein file:HIG-Run3Summer22DRPremix-00166_0.root --era Run3 --no_exec --mc -n $EVENTS || exit $? ;
