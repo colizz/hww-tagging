@@ -1,0 +1,4 @@
+import model h_Zgamma
+generate p p > h, (h > z a, z > l+ l-)
+add process p p > h j, (h > z a, z > l+ l-)
+output GluGluHToZG_ZToLL_TuneCP5_13TeV_madgraphMLM_pythia8 -nojpeg
