@@ -1,0 +1,10 @@
+set param_card MASS 6000045 $1
+set param_card DECAY 6000045 $2
+set param_card FRBlock 1 $2
+set param_card MASS 6000046 $1
+set param_card DECAY 6000046 $2
+set param_card FRBlock 2 $2
+set param_card MASS 6 $3
+set param_card YUKAWA 6 $3
+set param_card MASS 23 $4
+set param_card DECAY 24 $5

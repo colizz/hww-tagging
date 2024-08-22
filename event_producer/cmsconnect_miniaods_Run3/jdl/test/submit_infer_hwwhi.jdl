@@ -1,0 +1,37 @@
+Universe   = vanilla
+Executable = run_and_transfer.sh
+
++ProjectName="cms.org.cern"
+
+# custom args
+NEVENT = 500
+NEVENTLUMIBLOCK = 100
+NTHREAD = 1
+PROCNAME = GluGluToBulkGravitonToHHTo4W_JHUGen_MH-50-125-250-300_HighPt_narrow
+EOSPATH = root://eoscms.cern.ch//store/cmst3/group/vhcc/sfTuples/$(PROCNAME)/23MiniAODv4/miniv4_$(Cluster)-$(Process).root
+
+# note: use different seeds in different H->2prong and H->WW/ZZ routines to avoid overlap in LHE events
+BEGINSEED = 19106000
+
+# special LHE production configs for HWW/HZZ
+LHEPRODSCRIPT = run_instMG_JHUDefaultWMass.sh
+
+Arguments = $(JOBNUM) $(NEVENT) $(NEVENTLUMIBLOCK) $(NTHREAD) $(PROCNAME) $(BEGINSEED) $(EOSPATH) $(LHEPRODSCRIPT) $(EOSPATH) $(LHEPRODSCRIPT)
+
+#requirements = (OpSysAndVer =?= "CentOS7")
+#MY.WantOS = "el8"
+request_cpus = 1
+request_memory = 2000
+use_x509userproxy = true
+
++JobFlavour = "tomorrow"
+
+Log        = log/job.log_$(Cluster)
+Output     = log/job.out_$(Cluster)-$(Process)
+Error      = log/job.err_$(Cluster)-$(Process)
+
+should_transfer_files   = YES
+when_to_transfer_output = ON_EXIT_OR_EVICT
+transfer_output_files   = dummy.cc
+
+Queue JOBNUM from seq 1 800 |

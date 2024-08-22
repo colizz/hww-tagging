@@ -1,0 +1,18 @@
+set auto_update 0
+convert model __FULLPATH__/Massive_Higgs_UFO
+import model Massive_Higgs_UFO
+set group_subprocesses Auto
+set ignore_six_quark_processes False
+set loop_color_flows False
+set gauge unitary
+set complex_mass_scheme False
+set max_npoint_for_channel 0
+define p = g u c d s u~ c~ d~ s~
+define j = g u c d s u~ c~ d~ s~
+define ell+ = e+ mu+ ta+
+define ell- = e- mu- ta-
+define vl = ve vm vt
+define vl~ = ve~ vm~ vt~
+#signal term for scalar
+generate p p > h0, (h0 > t t~, (t > w+ b, w+ > ell+ vl), (t~ > w- b~, w- > ell- vl~)) NP^2==2
+output Spin0ToTT_VariableMass_WlepWlep -nojpeg

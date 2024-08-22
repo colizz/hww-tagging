@@ -1,0 +1,9 @@
+set auto_update 0
+convert model __FULLPATH__/g2hdm_charged_higgs_UFO
+import model g2hdm_charged_higgs_UFO
+define p = p b b~
+define j = p
+define all = j e+ mu+ e- mu- vl vl~
+generate p p > Hp Hm, (Hp > c b~), (Hm > c~ b)
+
+output ChargedHiggs_HplusToBC_HminusToBC_HT-600to6000_MH-15to250 -nojpeg
