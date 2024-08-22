@@ -11,9 +11,11 @@
 ## 6. use provided DIGI cfg
 ## 7. stop running dnntuples
 
-# dump the script and run in cmssw-el8
-cat <<'EndOfTestFile' > run_el8.sh
-#!/bin/bash -xe
+cat /etc/os-release
+
+# # dump the script and run in cmssw-el8
+# cat <<'EndOfTestFile' > run_el8.sh
+# #!/bin/bash -xe
 
 sleep $(( ( RANDOM % 200 ) + 1 ))
 
@@ -108,22 +110,22 @@ cmsRun -j FrameworkJobReport.xml MiniAODv4_cfg.py
 xrdcp --silent -p -f miniv4.root $EOSPATH
 touch dummy.cc
 
-# end of script
-EndOfTestFile
+# # end of script
+# EndOfTestFile
 
-# Make file executable
-chmod +x run_el8.sh
+# # Make file executable
+# chmod +x run_el8.sh
 
-if [ -e "/cvmfs/unpacked.cern.ch/registry.hub.docker.com/cmssw/el8:amd64" ]; then
-  CONTAINER_NAME="el8:amd64"
-elif [ -e "/cvmfs/unpacked.cern.ch/registry.hub.docker.com/cmssw/el8:x86_64" ]; then
-  CONTAINER_NAME="el8:x86_64"
-else
-  echo "Could not find amd64 or x86_64 for el8"
-  exit 1
-fi
-# Run in singularity container
-# Mount afs, eos, cvmfs
-# Mount /etc/grid-security for xrootd
-export SINGULARITY_CACHEDIR="/tmp/$(whoami)/singularity"
-singularity run -B /afs -B /eos -B /cvmfs -B /etc/grid-security -B /etc/pki/ca-trust --home $PWD:$PWD /cvmfs/unpacked.cern.ch/registry.hub.docker.com/cmssw/$CONTAINER_NAME $(echo $(pwd)/run_el8.sh "$@")
+# if [ -e "/cvmfs/unpacked.cern.ch/registry.hub.docker.com/cmssw/el8:amd64" ]; then
+#   CONTAINER_NAME="el8:amd64"
+# elif [ -e "/cvmfs/unpacked.cern.ch/registry.hub.docker.com/cmssw/el8:x86_64" ]; then
+#   CONTAINER_NAME="el8:x86_64"
+# else
+#   echo "Could not find amd64 or x86_64 for el8"
+#   exit 1
+# fi
+# # Run in singularity container
+# # Mount afs, eos, cvmfs
+# # Mount /etc/grid-security for xrootd
+# export SINGULARITY_CACHEDIR="/tmp/$(whoami)/singularity"
+# singularity run -B /afs -B /eos -B /cvmfs -B /etc/grid-security -B /etc/pki/ca-trust --home $PWD:$PWD /cvmfs/unpacked.cern.ch/registry.hub.docker.com/cmssw/$CONTAINER_NAME $(echo $(pwd)/run_el8.sh "$@")
