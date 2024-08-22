@@ -1,0 +1,36 @@
+Universe   = vanilla
+Executable = run_and_transfer_customQCD_AD.sh
+
++ProjectName="cms.org.cern"
+
+# custom args
+NEVENT = 1000
+NTHREAD = 1
+PROCNAME = QCD_Pt_350toInf_GenFatJetFilter_Pt-440toInf_MassNoNu-80to160_TuneCP5_13TeV_pythia8
+EOSPATH = root://eoscms.cern.ch//store/cmst3/group/vhcc/sfTuples/$(PROCNAME)/20UL17MiniAODv2/miniv2_$(Cluster)-$(Process).root
+EOSDNNTUPLEPATH = root://eoscms.cern.ch//store/cmst3/group/vhcc/sfTuples/dnntuples/v9-AD/$(PROCNAME)/dnnTuples_$(Cluster)-$(Process).root
+
+# this dictates how often the config will change (i.e., how often different H, X masses are sampled)
+NEVENTLUMIBLOCK = 100
+
+# note: use different seeds in different H->2prong and H->WW/ZZ routines to avoid overlap in LHE events
+BEGINSEED = 0
+
+Arguments = $(JOBNUM) $(NEVENT) $(NEVENTLUMIBLOCK) $(NTHREAD) $(PROCNAME) $(BEGINSEED) $(EOSPATH) $(EOSDNNTUPLEPATH) $(LHEPRODSCRIPT)
+
+requirements = (OpSysAndVer =?= "CentOS7")
+request_cpus = 1
+request_memory = 2000
+use_x509userproxy = true
+
++JobFlavour = "tomorrow"
+
+Log        = log/job.log_$(Cluster)
+Output     = log/job.out_$(Cluster)-$(Process)
+Error      = log/job.err_$(Cluster)-$(Process)
+
+should_transfer_files   = YES
+when_to_transfer_output = ON_EXIT_OR_EVICT
+transfer_output_files   = dummy.cc
+
+Queue JOBNUM from seq 1 100 |

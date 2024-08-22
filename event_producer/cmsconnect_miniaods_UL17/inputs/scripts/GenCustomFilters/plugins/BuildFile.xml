@@ -1,0 +1,7 @@
+<library name="GeneratorInterfaceGenCustomFiltersPlugins" file="*.cc">
+  <use name="FWCore/ParameterSet"/>
+  <use name="FWCore/Framework"/>
+  <use name="FWCore/Utilities"/>
+  <use name="DataFormats/JetReco"/>
+  <flags EDM_PLUGIN="1"/>
+</library>
