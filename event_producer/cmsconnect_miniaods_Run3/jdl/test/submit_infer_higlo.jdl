@@ -7,13 +7,14 @@ Executable = run_and_transfer.sh
 NEVENT = 500
 NEVENTLUMIBLOCK = 100
 NTHREAD = 1
-PROCNAME = GluGluToBulkGravitonToHHTo4QGluLTau_MH-50-125-250-300_LowPt_narrow
+PROCNAME = GluGluToBulkGravitonToHHTo4QGluLTau_MH-50-125-250-300_LowPt_narrow'
+COMPAIGN = Run3Summer23
 EOSPATH = root://eoscms.cern.ch//store/cmst3/group/vhcc/sfTuples/$(PROCNAME)/23MiniAODv4/miniv4_$(Cluster)-$(Process).root
 
 # note: use different seeds in different H->2prong and H->WW/ZZ routines to avoid overlap in LHE events
 BEGINSEED = 19100000
 
-Arguments = $(JOBNUM) $(NEVENT) $(NEVENTLUMIBLOCK) $(NTHREAD) $(PROCNAME) $(BEGINSEED) $(EOSPATH) $(LHEPRODSCRIPT)
+Arguments = $(JOBNUM) $(NEVENT) $(NEVENTLUMIBLOCK) $(NTHREAD) $(PROCNAME) $(COMPAIGN) $(BEGINSEED) $(EOSPATH) $(LHEPRODSCRIPT)
 
 #requirements = (OpSysAndVer =?= "AlmaLinux9")
 #MY.WantOS = "el8"

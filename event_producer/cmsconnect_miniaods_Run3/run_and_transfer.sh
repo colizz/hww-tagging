@@ -36,10 +36,11 @@ NEVENT=${2##*=} # ordered by crab.py script
 NEVENTLUMIBLOCK=${3##*=} # ordered by crab.py script
 NTHREAD=${4##*=} # ordered by crab.py script
 PROCNAME=${5##*=} # ordered by crab.py script
-BEGINSEED=${6##*=}
-EOSPATH=${7##*=}
-if ! [ -z "$8" ]; then
-  LHEPRODSCRIPT=${8##*=}
+CAMPAIGN=${6##*=}
+BEGINSEED=${7##*=}
+EOSPATH=${8##*=}
+if ! [ -z "$9" ]; then
+  LHEPRODSCRIPT=${9##*=}
 fi
 
 WORKDIR=`pwd`
@@ -91,20 +92,34 @@ cd $WORKDIR
 # SEED=$((${BEGINSEED} + ${JOBNUM}))
 SEED=$(((${BEGINSEED} + ${JOBNUM}) * 100))
 
+if [ "$CAMPAIGN" == "Run3Summer23" ]; then
+  GLOBALTAG=130X_mcRun3_2023_realistic_v15
+elif [ "$CAMPAIGN" == "Run3Summer23BPix" ]; then
+  GLOBALTAG=130X_mcRun3_2023_realistic_postBPix_v6
+else
+  echo "Unknown campaign: $CAMPAIGN"
+  exit 1
+fi
+
 # need to specify seeds otherwise gridpacks will be chosen from the same routine!!
 # remember to identify process.RandomNumberGeneratorService.externalLHEProducer.initialSeed="int(${SEED})" and externalLHEProducer->generator!!
-cmsDriver.py Configuration/GenProduction/python/${PROCNAME}.py --python_filename GS_cfg.py --eventcontent RAWSIM --customise Configuration/DataProcessing/Utils.addMonitoring --datatier GEN-SIM --fileout file:gensim.root --conditions 130X_mcRun3_2023_realistic_v15 --beamspot Realistic25ns13p6TeVEarly2023Collision --customise_commands process.RandomNumberGeneratorService.generator.initialSeed="int(${SEED})"\\nprocess.source.numberEventsInLuminosityBlock="cms.untracked.uint32(${NEVENTLUMIBLOCK})" --step GEN,SIM --geometry DB:Extended --era Run3_2023 --mc --nThreads $NTHREAD -n $NEVENT || exit $? ;
+cmsDriver.py Configuration/GenProduction/python/${PROCNAME}.py --python_filename GS_cfg.py --eventcontent RAWSIM --customise Configuration/DataProcessing/Utils.addMonitoring --datatier GEN-SIM --fileout file:gensim.root --conditions $GLOBALTAG --beamspot Realistic25ns13p6TeVEarly2023Collision --customise_commands process.RandomNumberGeneratorService.generator.initialSeed="int(${SEED})"\\nprocess.source.numberEventsInLuminosityBlock="cms.untracked.uint32(${NEVENTLUMIBLOCK})" --step GEN,SIM --geometry DB:Extended --era Run3_2023 --mc --nThreads $NTHREAD -n $NEVENT || exit $? ;
 
 # begin DRPremix
-# cmsDriver.py  --python_filename DIGIPremix_cfg.py --eventcontent PREMIXRAW --customise Configuration/DataProcessing/Utils.addMonitoring --datatier GEN-SIM-RAW --fileout file:aod.root --pileup_input "dbs:/Neutrino_E-10_gun/Run3Summer21PrePremix-Summer23_130X_mcRun3_2023_realistic_v13-v1/PREMIX" --conditions 130X_mcRun3_2023_realistic_v15 --step DIGI,DATAMIX,L1,DIGI2RAW,HLT:2023v12 --procModifiers premix_stage2 --geometry DB:Extended --filein file:gensim.root --datamix PreMix --era Run3_2023 --mc --nThreads $NTHREAD -n $NEVENT > digi.log 2>&1 || exit $?
+# cmsDriver.py  --python_filename DIGIPremix_cfg.py --eventcontent PREMIXRAW --customise Configuration/DataProcessing/Utils.addMonitoring --datatier GEN-SIM-RAW --fileout file:hlt.root --pileup_input "dbs:/Neutrino_E-10_gun/Run3Summer21PrePremix-Summer23_130X_mcRun3_2023_realistic_v13-v1/PREMIX" --conditions 130X_mcRun3_2023_realistic_v15 --step DIGI,DATAMIX,L1,DIGI2RAW,HLT:2023v12 --procModifiers premix_stage2 --geometry DB:Extended --filein file:gensim.root --datamix PreMix --era Run3_2023 --mc --nThreads $NTHREAD -n $NEVENT > digi.log 2>&1 || exit $? # for Run3Summer23
+# cmsDriver.py  --python_filename DIGIPremix_cfg.py --eventcontent PREMIXRAW --customise Configuration/DataProcessing/Utils.addMonitoring --datatier GEN-SIM-RAW --fileout file:hlt.root --pileup_input "dbs:/Neutrino_E-10_gun/Run3Summer21PrePremix-Summer23BPix_130X_mcRun3_2023_realistic_postBPix_v1-v1/PREMIX" --conditions 130X_mcRun3_2023_realistic_postBPix_v6 --step DIGI,DATAMIX,L1,DIGI2RAW,HLT:2023v12 --procModifiers premix_stage2 --geometry DB:Extended --filein file:gensim.root --datamix PreMix --era Run3_2023 --mc --nThreads $NTHREAD -n $NEVENT > digi.log 2>&1 || exit $? # for Run3Summer23BPix
 # using provided DIGIPremix cfg
-cmsRun inputs/scripts/DIGIPremix_Run3_2023_template_cfg.py maxEvents=$NEVENT nThreads=$NTHREAD
+if [ "$CAMPAIGN" == "Run3Summer23" ]; then
+  cmsRun inputs/scripts/DIGIPremix_Run3_2023_template_cfg.py maxEvents=$NEVENT nThreads=$NTHREAD
+elif [ "$CAMPAIGN" == "Run3Summer23BPix" ]; then
+  cmsRun inputs/scripts/DIGIPremix_Run3_2023BPix_template_cfg.py maxEvents=$NEVENT nThreads=$NTHREAD
+fi
 
 # begin RECO
-cmsDriver.py  --python_filename RECO_cfg.py --eventcontent AODSIM --customise Configuration/DataProcessing/Utils.addMonitoring --datatier AODSIM --fileout file:reco.root --conditions 130X_mcRun3_2023_realistic_v15 --step RAW2DIGI,L1Reco,RECO,RECOSIM --geometry DB:Extended --filein file:hlt.root --era Run3_2023 --mc --nThreads $NTHREAD -n $NEVENT || exit $? ;
+cmsDriver.py  --python_filename RECO_cfg.py --eventcontent AODSIM --customise Configuration/DataProcessing/Utils.addMonitoring --datatier AODSIM --fileout file:reco.root --conditions $GLOBALTAG --step RAW2DIGI,L1Reco,RECO,RECOSIM --geometry DB:Extended --filein file:hlt.root --era Run3_2023 --mc --nThreads $NTHREAD -n $NEVENT || exit $? ;
 
 # Run MiniAODv2 with -j FrameworkJobReport.xml 
-cmsDriver.py  --python_filename MiniAODv4_cfg.py --eventcontent MINIAODSIM --customise Configuration/DataProcessing/Utils.addMonitoring --datatier MINIAODSIM --fileout file:miniv4.root --conditions 130X_mcRun3_2023_realistic_v15 --step PAT --geometry DB:Extended --filein file:reco.root --era Run3_2023 --no_exec --mc --nThreads $NTHREAD -n $NEVENT || exit $? ;
+cmsDriver.py  --python_filename MiniAODv4_cfg.py --eventcontent MINIAODSIM --customise Configuration/DataProcessing/Utils.addMonitoring --datatier MINIAODSIM --fileout file:miniv4.root --conditions $GLOBALTAG --step PAT --geometry DB:Extended --filein file:reco.root --era Run3_2023 --no_exec --mc --nThreads $NTHREAD -n $NEVENT || exit $? ;
 cmsRun -j FrameworkJobReport.xml MiniAODv4_cfg.py
 # Transfer file
 xrdcp --silent -p -f miniv4.root $EOSPATH
