@@ -2,8 +2,10 @@
 
 INPUTFILES=$1
 CMSRUNARGS=$2
-if ! [ -z "$3" ]; then
-  EOSPATH=$3
+EOSPATH=$3
+BRANCHNAME=$4
+if [ -z "$BRANCHNAME" ]; then
+  BRANCHNAME="dev-UL-hww"
 fi
 
 WORKDIR=`pwd`
@@ -22,7 +24,7 @@ bash install_onnxruntime.sh
 rm -f install_onnxruntime.sh
 
 # clone this repo into "DeepNTuples" directory
-git clone https://github.com/colizz/DNNTuples.git DeepNTuples -b dev-UL-hww
+git clone https://github.com/colizz/DNNTuples.git DeepNTuples -b $BRANCHNAME
 # download model
 curl -s --retry 10 https://coli.web.cern.ch/coli/tmp/.230626-003937_partv2_model/ak8/V02-HidLayer/model_embed.onnx -o $CMSSW_BASE/src/DeepNTuples/Ntupler/data/InclParticleTransformer-MD/ak8/V02-HidLayer/model_embed.onnx
 
