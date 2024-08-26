@@ -7,7 +7,7 @@ Executable = run_and_transfer.sh
 NEVENT = 500
 NEVENTLUMIBLOCK = 100
 NTHREAD = 1
-PROCNAME = GluGluToBulkGravitonToHHTo4QGluLTau_MH-50-125-250-300_LowPt_narrow'
+PROCNAME = GluGluToBulkGravitonToHHTo4QGluLTau_MH-50-125-250-300_LowPt_narrow
 COMPAIGN = Run3Summer23BPix
 EOSPATH = root://eoscms.cern.ch//store/cmst3/group/vhcc/sfTuples/$(PROCNAME)/23BPixMiniAODv4/miniv4_$(Cluster)-$(Process).root
 
