@@ -1,7 +1,7 @@
 Universe   = vanilla
 Executable = run_and_transfer.sh
 
-+ProjectName="cms.org.fnal"
++ProjectName="cms.org.cern"
 
 # custom args
 NEVENT = 500
