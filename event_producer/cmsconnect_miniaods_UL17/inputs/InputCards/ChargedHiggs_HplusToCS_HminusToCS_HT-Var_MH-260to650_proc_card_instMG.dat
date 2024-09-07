@@ -1,7 +1,0 @@
-import model 2HDM
-define p = p b b~
-define j = p
-define all = j e+ mu+ e- mu- vl vl~
-generate p p > h+ h-, (h+ > c s~), (h- > c~ s)
-
-output ChargedHiggs_HplusToCS_HminusToCS_HT-Var_MH-260to650 -nojpeg

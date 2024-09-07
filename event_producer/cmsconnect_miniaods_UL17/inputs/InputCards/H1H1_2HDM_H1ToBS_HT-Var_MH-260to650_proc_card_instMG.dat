@@ -1,7 +1,0 @@
-import model 2HDM
-define p = p b b~
-define j = p
-define all = j e+ mu+ e- mu- vl vl~
-generate p p > h1 h1, (h1 > b s~), (h1 > b~ s)
-
-output H1H1_2HDM_H1ToBS_HT-Var_MH-260to650 -nojpeg

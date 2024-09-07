@@ -1,3 +1,0 @@
-set param_card mass 25 $1
-set param_card decay 25 $2
-set htjmin $3
