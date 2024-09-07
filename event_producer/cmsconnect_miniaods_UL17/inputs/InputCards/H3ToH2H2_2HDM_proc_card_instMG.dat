@@ -1,0 +1,6 @@
+import model 2HDM
+define p = p b b~
+define j = p
+generate p p > h3, (h3 > h2 h2)
+
+output H3ToH2H2_2HDM -nojpeg
