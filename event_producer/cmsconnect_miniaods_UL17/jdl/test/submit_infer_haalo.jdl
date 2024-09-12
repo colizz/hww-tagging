@@ -1,0 +1,36 @@
+Universe   = vanilla
+Executable = run_and_transfer.sh
+
++ProjectName="cms.org.cern"
+
+# custom args
+NEVENT = 500
+NTHREAD = 1
+PROCNAME = GluGluToBulkGravitonToHHTo4A_MH-50-125-250-300_LowPt_narrow
+# eos path for cy
+EOSPATH = root://eosuser.cern.ch//eos/user/c/chpan/condor_output/miniaods/$(PROCNAME)/20UL17MiniAODv2/miniv2_$(Cluster)-$(Process).root
+
+# note: use different seeds in different H->2prong and H->WW/ZZ routines to avoid overlap in LHE events
+BEGINSEED = 9108000
+
+Arguments = $(JOBNUM) $(NEVENT) $(NEVENTLUMIBLOCK) $(NTHREAD) $(PROCNAME) $(BEGINSEED) $(EOSPATH) $(LHEPRODSCRIPT)
+
+# Sept 2024: submit cc7 jobs on lxplus
+MY.WantOS = "el7"
+
+requirements = (OpSysAndVer =?= "CentOS7")
+request_cpus = 1
+request_memory = 2000
+use_x509userproxy = true
+
++JobFlavour = "tomorrow"
+
+Log        = log/job.log_$(Cluster)
+Output     = log/job.out_$(Cluster)-$(Process)
+Error      = log/job.err_$(Cluster)-$(Process)
+
+should_transfer_files   = YES
+when_to_transfer_output = ON_EXIT_OR_EVICT
+transfer_output_files   = dummy.cc
+
+Queue JOBNUM from seq 1 250 |
