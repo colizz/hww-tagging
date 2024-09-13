@@ -1,0 +1,38 @@
+Universe   = vanilla
+Executable = run_and_transfer.sh
+
++ProjectName="cms.org.cern"
+
+# custom args
+NEVENT = 500
+NTHREAD = 1
+PROCNAME = BulkGravitonToHHTo4A_MX-Var_MH-260to650
+EOSPATH = root://eoscms.cern.ch//store/cmst3/group/vhcc/sfTuples/$(PROCNAME)/20UL17MiniAODv2/miniv2_$(Cluster)-$(Process).root
+# this dictates how often the config will change (i.e., how often different H, X masses are sampled)
+NEVENTLUMIBLOCK = 50
+
+# note: use different seeds in different H->2prong and H->WW/ZZ routines to avoid overlap in LHE events
+BEGINSEED = 416000
+
+Arguments = $(JOBNUM) $(NEVENT) $(NEVENTLUMIBLOCK) $(NTHREAD) $(PROCNAME) $(BEGINSEED) $(EOSPATH) $(LHEPRODSCRIPT)
+
+# since Sept 2024: should use cc7 container for this job
+# requirements = (OpSysAndVer =?= "CentOS7")
+Requirements = HAS_SINGULARITY == True
++SingularityImage = "/cvmfs/unpacked.cern.ch/registry.hub.docker.com/cmssw/cc7:x86_64"
+request_cpus = 1
+request_memory = 2000
+use_x509userproxy = true
+
++JobFlavour = "tomorrow"
+
+Log        = log/job.log_$(Cluster)
+Output     = log/job.out_$(Cluster)-$(Process)
+Error      = log/job.err_$(Cluster)-$(Process)
+
+should_transfer_files   = YES
+when_to_transfer_output = ON_EXIT_OR_EVICT
+transfer_output_files   = dummy.cc
+
+# same event number as h->ee (half of h->bb) but x2 due to low+high mass
+Queue JOBNUM from seq 1 4000 |

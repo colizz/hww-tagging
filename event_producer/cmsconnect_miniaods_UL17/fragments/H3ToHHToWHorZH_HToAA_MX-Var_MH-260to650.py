@@ -119,17 +119,17 @@ def generate_mass_ratios():
             return num1, num2
 
 
-# append low-mass points
-for mh in low_m_higgs:
-    weight = 1.0 / num_low_points # the previous setting is problematic. should not use 1.0 but 1.0/num_low_points
-    for mx in low_m_res:
-        # print('H3ToHH_2HDM_MX%.0f_MH%.0f weight %.5f' % (mx, mh, weight))
-        num1, num2 = generate_mass_ratios()
-        generator.RandomizedParameters.append(pset('H3ToH2H2_2HDM', mx, mh, mh * num1, mh * num2, weight))
-        num1, num2 = generate_mass_ratios()
-        generator.RandomizedParameters.append(pset('H3ToHpHm_2HDM', mx, mh, mh * num1, mh * num2, weight))
+# # append low-mass points
+# for mh in low_m_higgs:
+#     weight = 1.0 / num_low_points # the previous setting is problematic. should not use 1.0 but 1.0/num_low_points
+#     for mx in low_m_res:
+#         # print('H3ToHH_2HDM_MX%.0f_MH%.0f weight %.5f' % (mx, mh, weight))
+#         num1, num2 = generate_mass_ratios()
+#         generator.RandomizedParameters.append(pset('H3ToH2H2_2HDM', mx, mh, mh * num1, mh * num2, weight))
+#         num1, num2 = generate_mass_ratios()
+#         generator.RandomizedParameters.append(pset('H3ToHpHm_2HDM', mx, mh, mh * num1, mh * num2, weight))
 
-# append high-mass points
+# only append high-mass points
 for mh in m_higgs:
     m_res = np.linspace(mres_min(mh), mres_min(mh) * 10, len(low_m_res), endpoint=False)
     weight = mh_weight(mh)
