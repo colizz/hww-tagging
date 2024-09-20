@@ -4,11 +4,10 @@ Executable = run_dnntuples.sh
 #+ProjectName="cms.org.cern"
 
 
-PROCABBR = haa4p
-PROCNAME = H3ToHHToWHorZH_HToAA_MX-600to6000_MH-15to250
+PROCABBR = haahm
+PROCNAME = BulkGravitonToHHTo4A_MX-Var_MH-260to650
 
-# ad-hoc fix for H->aa sample: remove high-mass events..
-CMSRUNARGS = 'isTrainSample=1 addLowLevel=1 adhocFixMode=1'
+CMSRUNARGS = 'isTrainSample=1 addLowLevel=1'
 # send to IHEP T2
 EOSPATH = root://cceos.ihep.ac.cn//eos/ihep/cms/store/user/coli/dnntuples/v10_train/$(PROCNAME)/dnnTuples_$(Cluster)-$(Process).root
 
