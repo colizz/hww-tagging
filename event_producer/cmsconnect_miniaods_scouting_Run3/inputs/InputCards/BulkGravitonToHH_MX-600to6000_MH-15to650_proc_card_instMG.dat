@@ -2,6 +2,7 @@ set group_subprocesses Auto
 set ignore_six_quark_processes False 
 set gauge unitary 
 set complex_mass_scheme False 
+set auto_convert_model True
 import model RS_bulk_ktilda 
 define p = g u c d s u~ c~ d~ s~ 
 generate p p > y, ( y > H H ) 
