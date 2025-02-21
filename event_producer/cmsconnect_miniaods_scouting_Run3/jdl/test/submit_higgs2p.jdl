@@ -1,21 +1,23 @@
 Universe   = vanilla
 Executable = run_and_transfer.sh
 
-+ProjectName="cms.org.cern"
++ProjectName="cms.org.fnal"
 
 # custom args
 NEVENT = 500
+NEVENTLUMIBLOCK = 100
 NTHREAD = 1
 PROCNAME = BulkGravitonToHHTo4QGluLTau_MX-600to6000_MH-15to650
-# this dictates how often the config will change (i.e., how often different H, X masses are sampled)
-NEVENTLUMIBLOCK = 100
+EOSPATH = root://cceos.ihep.ac.cn//eos/ihep/cms/store/user/yiyangz/Research/CMS_VVV_Scouting/$(PROCNAME)/24MiniAODv6/miniv6_$(Cluster)-$(Process).root
 
 # note: use different seeds in different H->2prong and H->WW/ZZ routines to avoid overlap in LHE events
 BEGINSEED = 100000
 
 Arguments = $(JOBNUM) $(NEVENT) $(NEVENTLUMIBLOCK) $(NTHREAD) $(PROCNAME) $(BEGINSEED) $(EOSPATH) $(LHEPRODSCRIPT)
 
-requirements = (OpSysAndVer =?= "CentOS7")
+#requirements = (OpSysAndVer =?= "CentOS8")
+Requirements = HAS_SINGULARITY == True
++SingularityImage = "/cvmfs/unpacked.cern.ch/registry.hub.docker.com/cmssw/el8:x86_64"
 request_cpus = 1
 request_memory = 2000
 use_x509userproxy = true

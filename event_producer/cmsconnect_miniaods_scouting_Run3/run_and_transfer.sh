@@ -15,7 +15,7 @@ sleep $(( ( RANDOM % 200 ) + 1 ))
 
 wget --tries=3 https://github.com/colizz/hww-tagging/archive/refs/heads/dev-miniaods.tar.gz
 tar xaf dev-miniaods.tar.gz
-mv hww-tagging-dev-miniaods/event_producer/cmsconnect_miniaods_Run3/{inputs,fragments} .
+mv hww-tagging-dev-miniaods/event_producer/cmsconnect_miniaods_scouting_Run3/{inputs,fragments} .
 # rsync -a /afs/cern.ch/user/c/coli/work/hww/hww-tagging-minis/event_producer/cmsconnect_miniaods_Run3/{inputs,fragments} . # test-only
 
 xrdcp root://eoscms.cern.ch//store/cmst3/group/vhcc/sfTuples/downloads/MG5_aMC_v2.9.18.tar.gz inputs/MG5_aMC_v2.9.18.tar.gz

@@ -51,7 +51,7 @@ def mres_min(mh):
 def pset(mx, mh, weight):
     return cms.PSet(
             ConfigWeight = cms.double(1),
-            GridpackPath =  cms.string('instMG://BulkGravitonToHH_MX-600to6000_MH-15to650/MG5_aMC_v2.6.5/%.0f:%.0f' % (mx, mh)),
+            GridpackPath =  cms.string('instMG://BulkGravitonToHH_MX-600to6000_MH-15to650/MG5_aMC_v2.9.18/%.0f:%.0f' % (mx, mh)),
             ConfigDescription = cms.string('BulkGravitonToHH_MX%.0f_MH%.0f' % (mx, mh)),
             PythiaParameters = cms.PSet(
                 pythia8CommonSettingsBlock,
