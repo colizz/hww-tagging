@@ -5,7 +5,7 @@ Executable = run_and_transfer.sh
 
 # custom args
 NEVENT = 500
-NEVENTLUMIBLOCK = 100
+NEVENTLUMIBLOCK = 50
 NTHREAD = 1
 PROCNAME = BulkGravitonToHHTo4QGluLTau_MX-600to6000_MH-15to650
 EOSPATH = root://cceos.ihep.ac.cn//eos/ihep/cms/store/user/yiyangz/Research/CMS_VVV_Scouting/$(PROCNAME)/24MiniAODv6/miniv6_$(Cluster)-$(Process).root

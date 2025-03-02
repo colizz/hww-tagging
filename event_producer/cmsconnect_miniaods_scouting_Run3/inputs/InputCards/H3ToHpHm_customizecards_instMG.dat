@@ -1,0 +1,4 @@
+set param_card mass 36 $1 
+set param_card decay 36 1.000000e-03 
+set param_card mass 35 $2
+set param_card decay 35 1.000000e-03 

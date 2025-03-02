@@ -1,0 +1,10 @@
+set group_subprocesses Auto 
+set ignore_six_quark_processes False 
+set gauge unitary 
+set complex_mass_scheme False 
+set auto_update 0
+convert model __FULLPATH__/2HDM
+import model 2HDM 
+define p = g u c d s u~ c~ d~ s~ 
+generate p p > h3, ( h3 > h+ h- ) 
+output H3ToHpHm -nojpeg 
