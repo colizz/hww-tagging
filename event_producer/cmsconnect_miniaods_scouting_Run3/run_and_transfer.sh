@@ -40,6 +40,7 @@ WORKDIR=`pwd`
 
 export SCRAM_ARCH=el8_amd64_gcc12
 export RELEASE=CMSSW_14_0_19
+export RELEASE_SKIM=CMSSW_15_0_0_pre3
 source /cvmfs/cms.cern.ch/cmsset_default.sh
 
 if [ -r $RELEASE/src ] ; then
@@ -86,6 +87,7 @@ cd $WORKDIR
 SEED=$(((${BEGINSEED} + ${JOBNUM}) * 100))
 
 GLOBALTAG=140X_mcRun3_2024_realistic_v26
+GLOBALTAG_SKIM=150X_mcRun3_2024_realistic_v1
 
 ## NanoGEN
 # cmsDriver.py Configuration/GenProduction/python/${PROCNAME}.py --python_filename wmLHEGENNANO_cfg.py --eventcontent NANOAODGEN --customise Configuration/DataProcessing/Utils.addMonitoring --datatier NANOAOD --customise_commands process.RandomNumberGeneratorService.generator.initialSeed="int(${SEED})"\\nprocess.source.numberEventsInLuminosityBlock="cms.untracked.uint32(100)" --fileout file:lhegennano.root --conditions 140X_mcRun3_2024_realistic_v26 --beamspot Realistic25ns13TeVEarly2017Collision --step LHE,GEN,NANOGEN --geometry DB:Extended --era Run2_2017 --mc -n $NEVENT --nThreads $NTHREAD || exit $? ;
@@ -108,8 +110,19 @@ cmsRun inputs/scripts/DIGIPremix_Run3_2024_template_cfg.py maxEvents=$NEVENT nTh
 
 cmsDriver.py  --python_filename RECO_cfg.py --eventcontent AODSIM --customise Configuration/DataProcessing/Utils.addMonitoring --datatier AODSIM --fileout file:reco.root --conditions $GLOBALTAG --step RAW2DIGI,L1Reco,RECO,RECOSIM --geometry DB:Extended --filein file:hlt.root --era Run3_2024 --mc --nThreads $NTHREAD -n $NEVENT || exit $? ;
 
-# Run MiniAODv2 with -j FrameworkJobReport.xml 
-cmsDriver.py  --python_filename MiniAODv6_cfg.py --eventcontent MINIAODSIM --customise Configuration/DataProcessing/Utils.addMonitoring --datatier MINIAODSIM --fileout file:miniv6.root --conditions $GLOBALTAG --step PAT --geometry DB:Extended --filein file:reco.root --era Run3_2024 --no_exec --mc --nThreads $NTHREAD -n $NEVENT || exit $? ;
+# Change to CMSSW_15_0_0_pre3 before SKIM
+
+if [ -r $RELEASE_SKIM/src ] ; then
+  echo release $RELEASE_SKIM already exists
+else
+  scram p CMSSW $RELEASE_SKIM
+fi
+cd $RELEASE_SKIM/src
+eval `scram runtime -sh`
+cd $WORKDIR
+
+# Run MiniAODv6 with -j FrameworkJobReport.xml 
+cmsDriver.py  --python_filename MiniAODv6_cfg.py --eventcontent MINIAODSIM --customise Configuration/DataProcessing/Utils.addMonitoring --datatier MINIAODSIM --fileout file:miniv6.root --conditions $GLOBALTAG_SKIM --step PAT --geometry DB:Extended --filein file:reco.root --era Run3_2024 --no_exec --mc --nThreads $NTHREAD -n $NEVENT || exit $? ;
 cmsRun -j FrameworkJobReport.xml MiniAODv6_cfg.py
 # Transfer file
 xrdcp --silent -p -f miniv6.root $EOSPATH

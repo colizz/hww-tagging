@@ -1,0 +1,35 @@
+Universe   = vanilla
+Executable = run_and_transfer.sh
+
++ProjectName="cms.org.fnal"
+
+# custom args
+NEVENT = 500
+NEVENTLUMIBLOCK = 50
+NTHREAD = 1
+PROCNAME = BulkGravitonToHHTo4QGluLTau_MX-600to6000_MH-15to650
+EOSPATH = root://cceos.ihep.ac.cn//eos/ihep/cms/store/user/yiyangz/Research/CMS_VVV_Scouting/$(PROCNAME)/newMiniAODv6/miniv6_$(Cluster)-$(Process).root
+
+# note: use different seeds in different H->2prong and H->WW/ZZ routines to avoid overlap in LHE events
+BEGINSEED = 100000
+
+Arguments = $(JOBNUM) $(NEVENT) $(NEVENTLUMIBLOCK) $(NTHREAD) $(PROCNAME) $(BEGINSEED) $(EOSPATH) $(LHEPRODSCRIPT)
+
+#requirements = (OpSysAndVer =?= "CentOS8")
+Requirements = HAS_SINGULARITY == True
++SingularityImage = "/cvmfs/unpacked.cern.ch/registry.hub.docker.com/cmssw/el8:x86_64"
+request_cpus = 1
+request_memory = 2000
+use_x509userproxy = true
+
++JobFlavour = "tomorrow"
+
+Log        = log/job.log_$(Cluster)
+Output     = log/job.out_$(Cluster)-$(Process)
+Error      = log/job.err_$(Cluster)-$(Process)
+
+should_transfer_files   = YES
+when_to_transfer_output = ON_EXIT_OR_EVICT
+transfer_output_files   = dummy.cc
+
+Queue JOBNUM from seq 1 3200 |
