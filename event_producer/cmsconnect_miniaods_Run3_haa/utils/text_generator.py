@@ -61,7 +61,7 @@ ProductionFilterSequence = cms.Sequence(generator*gj_filter)
 '''
 
 str_jdl = r'''Universe   = vanilla
-Executable = run_and_transfer.sh
+Executable = run_and_transfer_haa.sh
 
 +ProjectName="cms.org.cern"
 

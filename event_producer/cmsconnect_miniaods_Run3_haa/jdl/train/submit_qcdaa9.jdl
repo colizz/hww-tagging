@@ -1,5 +1,5 @@
 Universe   = vanilla
-Executable = run_and_transfer.sh
+Executable = run_and_transfer_haa.sh
 
 +ProjectName="cms.org.cern"
 
