@@ -100,8 +100,8 @@ import os
 for i, (ptmin, ptmax) in enumerate([(170, 300), (300, 470), (470, 600), (600, 800), (800, 1000), (1000, 1400), (1400, 1800), (1800, 2400), (2400, 3200), (3200, 100000)]):
     if ptmax == 100000:
         ptmax = "Inf"
-    # with open(f"fragments/GJet_PT-{ptmin}to{ptmax}_DoubleEMEnriched_MGG-80_TuneCP5_13p6TeV_pythia8.py", "w") as f:
-    #     f.write(str_fragment.replace("__IND__", str(i)))
+    with open(f"fragments/GJet_PT-{ptmin}to{ptmax}_DoubleEMEnriched_MGG-80_TuneCP5_13TeV_pythia8.py", "w") as f:
+        f.write(str_fragment.replace("__IND__", str(i)))
 
     with open(f"jdl/train/submit_qcdaa{i}.jdl", "w") as f:
-        f.write(str_jdl.replace("__PROCNAME__", f"GJet_PT-{ptmin}to{ptmax}_DoubleEMEnriched_MGG-80_TuneCP5_13p6TeV_pythia8"))
+        f.write(str_jdl.replace("__PROCNAME__", f"GJet_PT-{ptmin}to{ptmax}_DoubleEMEnriched_MGG-80_TuneCP5_13TeV_pythia8"))

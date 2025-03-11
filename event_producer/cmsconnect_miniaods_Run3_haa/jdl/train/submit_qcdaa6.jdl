@@ -7,7 +7,7 @@ Executable = run_and_transfer.sh
 NEVENT = 5000
 NEVENTLUMIBLOCK = 5000
 NTHREAD = 1
-PROCNAME = GJet_PT-1400to1800_DoubleEMEnriched_MGG-80_TuneCP5_13p6TeV_pythia8
+PROCNAME = GJet_PT-1400to1800_DoubleEMEnriched_MGG-80_TuneCP5_13TeV_pythia8
 EOSPATH = root://eoscms.cern.ch//store/cmst3/group/vhcc/sfTuples/$(PROCNAME)/24MiniAODv6/miniv6_$(Cluster)-$(Process).root
 
 # note: use different seeds in different H->2prong and H->WW/ZZ routines to avoid overlap in LHE events
