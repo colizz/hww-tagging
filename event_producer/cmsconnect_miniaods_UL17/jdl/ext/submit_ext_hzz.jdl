@@ -15,10 +15,10 @@ BEGINSEED = 10
 
 Arguments = $(JOBNUM) $(NEVENT) $(NEVENTLUMIBLOCK) $(NTHREAD) $(PROCNAME) $(BEGINSEED) $(EOSPATH) $(LHEPRODSCRIPT)
 
-# Sept 2024: submit cc7 jobs on lxplus
-MY.WantOS = "el7"
-
-requirements = (OpSysAndVer =?= "CentOS7")
+# since Sept 2024: should use cc7 container for this job
+# requirements = (OpSysAndVer =?= "CentOS7")
+Requirements = HAS_SINGULARITY == True
++SingularityImage = "/cvmfs/unpacked.cern.ch/registry.hub.docker.com/cmssw/cc7:x86_64"
 request_cpus = 1
 request_memory = 2000
 use_x509userproxy = true
