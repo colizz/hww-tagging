@@ -105,7 +105,7 @@ cmsDriver.py --python_filename SIM_cfg.py --eventcontent RAWSIM --customise Conf
 # begin DRPremix
 # cmsDriver.py --python_filename DIGIPremix_cfg.py --eventcontent PREMIXRAW --customise Configuration/DataProcessing/Utils.addMonitoring --datatier GEN-SIM-DIGI --fileout file:digi.root --pileup_input "dbs:/Neutrino_E-10_gun/RunIISummer20ULPrePremix-UL17_106X_mc2017_realistic_v6-v3/PREMIX" --conditions 106X_mc2017_realistic_v6 --step DIGI,DATAMIX,L1,DIGI2RAW --procModifiers premix_stage2 --geometry DB:Extended --filein file:sim.root --datamix PreMix --era Run2_2017 --runUnscheduled --mc --nThreads $NTHREAD -n $NEVENT > digi.log 2>&1 || exit $? ; # too many output, log into file 
 # using provided DIGIPremix cfg
-cmsRun inputs/scripts/DIGIPremix_UL2017_template_cfg.py maxEvents=$NEVENT nThreads=$NTHREAD
+cmsRun inputs/scripts/DIGIPremix_UL2017_template_cernt2_cfg.py maxEvents=$NEVENT nThreads=$NTHREAD
 
 # begin HLT
 # load new cmssw env
