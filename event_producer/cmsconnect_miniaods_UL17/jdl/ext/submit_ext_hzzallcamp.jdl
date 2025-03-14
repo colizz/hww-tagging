@@ -32,13 +32,19 @@ when_to_transfer_output = ON_EXIT_OR_EVICT
 transfer_output_files   = dummy.cc
 
 BEGINSEED = 10000
-Arguments = $(JOBNUM) $(NEVENT) $(NEVENTLUMIBLOCK) $(NTHREAD) $(PROCNAME) UL16APV $(BEGINSEED) $(EOSPATH) $(LHEPRODSCRIPT)
-Queue JOBNUM from seq 1 1 |
+CAMPAIGN = UL16APV
+EOSPATH = root://eoscms.cern.ch//store/cmst3/group/vhcc/sfTuples/ext/$(PROCNAME)/20$(CAMPAIGN)MiniAODv2/miniv2_$(Cluster)-$(Process).root
+Arguments = $(JOBNUM) $(NEVENT) $(NEVENTLUMIBLOCK) $(NTHREAD) $(PROCNAME) $(CAMPAIGN) $(BEGINSEED) $(EOSPATH) $(LHEPRODSCRIPT)
+Queue JOBNUM from seq 1 200 |
 
 BEGINSEED = 20000
-Arguments = $(JOBNUM) $(NEVENT) $(NEVENTLUMIBLOCK) $(NTHREAD) $(PROCNAME) UL16 $(BEGINSEED) $(EOSPATH) $(LHEPRODSCRIPT)
-Queue JOBNUM from seq 1 1 |
+CAMPAIGN = UL16
+EOSPATH = root://eoscms.cern.ch//store/cmst3/group/vhcc/sfTuples/ext/$(PROCNAME)/20$(CAMPAIGN)MiniAODv2/miniv2_$(Cluster)-$(Process).root
+Arguments = $(JOBNUM) $(NEVENT) $(NEVENTLUMIBLOCK) $(NTHREAD) $(PROCNAME) $(CAMPAIGN) $(BEGINSEED) $(EOSPATH) $(LHEPRODSCRIPT)
+Queue JOBNUM from seq 1 200 |
 
 BEGINSEED = 30000
-Arguments = $(JOBNUM) $(NEVENT) $(NEVENTLUMIBLOCK) $(NTHREAD) $(PROCNAME) UL18 $(BEGINSEED) $(EOSPATH) $(LHEPRODSCRIPT)
-Queue JOBNUM from seq 1 1 |
+CAMPAIGN = UL18
+EOSPATH = root://eoscms.cern.ch//store/cmst3/group/vhcc/sfTuples/ext/$(PROCNAME)/20$(CAMPAIGN)MiniAODv2/miniv2_$(Cluster)-$(Process).root
+Arguments = $(JOBNUM) $(NEVENT) $(NEVENTLUMIBLOCK) $(NTHREAD) $(PROCNAME) $(CAMPAIGN) $(BEGINSEED) $(EOSPATH) $(LHEPRODSCRIPT)
+Queue JOBNUM from seq 1 500 |
