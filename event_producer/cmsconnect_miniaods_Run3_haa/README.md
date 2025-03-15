@@ -1,0 +1,1 @@
+To produce custom fine-tuning samples for Haa study. Use Summer24 (14_0_X) + reMini/Nano (15_0_X) campaign.

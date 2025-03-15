@@ -1,0 +1,50 @@
+Universe   = vanilla
+Executable = run_and_transfer_ofc_wmlhegen_allcampaign.sh
+
++ProjectName="cms.org.cern"
+
+# custom args
+NEVENT = 500
+NTHREAD = 1
+PROCNAME = GluGluHToZZ_Pt-200ToInf_M-125_TuneCP5_MINLO_13TeV-powheg-pythia8
+EOSPATH = root://eoscms.cern.ch//store/cmst3/group/vhcc/sfTuples/ext/$(PROCNAME)/20UL17MiniAODv2/miniv2_$(Cluster)-$(Process).root
+NEVENTLUMIBLOCK = 100
+
+# note: use different seeds in different H->2prong and H->WW/ZZ routines to avoid overlap in LHE events
+BEGINSEED = 10
+
+# since Sept 2024: should use cc7 container for this job
+# requirements = (OpSysAndVer =?= "CentOS7")
+Requirements = HAS_SINGULARITY == True
++SingularityImage = "/cvmfs/unpacked.cern.ch/registry.hub.docker.com/cmssw/cc7:x86_64"
+request_cpus = 1
+request_memory = 2000
+use_x509userproxy = true
+
++JobFlavour = "tomorrow"
+
+Log        = log/job.log_$(Cluster)
+Output     = log/job.out_$(Cluster)-$(Process)
+Error      = log/job.err_$(Cluster)-$(Process)
+
+should_transfer_files   = YES
+when_to_transfer_output = ON_EXIT_OR_EVICT
+transfer_output_files   = dummy.cc
+
+BEGINSEED = 10000
+CAMPAIGN = UL16APV
+EOSPATH = root://eoscms.cern.ch//store/cmst3/group/vhcc/sfTuples/ext/$(PROCNAME)/20$(CAMPAIGN)MiniAODv2/miniv2_$(Cluster)-$(Process).root
+Arguments = $(JOBNUM) $(NEVENT) $(NEVENTLUMIBLOCK) $(NTHREAD) $(PROCNAME) $(CAMPAIGN) $(BEGINSEED) $(EOSPATH) $(LHEPRODSCRIPT)
+Queue JOBNUM from seq 1 200 |
+
+BEGINSEED = 20000
+CAMPAIGN = UL16
+EOSPATH = root://eoscms.cern.ch//store/cmst3/group/vhcc/sfTuples/ext/$(PROCNAME)/20$(CAMPAIGN)MiniAODv2/miniv2_$(Cluster)-$(Process).root
+Arguments = $(JOBNUM) $(NEVENT) $(NEVENTLUMIBLOCK) $(NTHREAD) $(PROCNAME) $(CAMPAIGN) $(BEGINSEED) $(EOSPATH) $(LHEPRODSCRIPT)
+Queue JOBNUM from seq 1 200 |
+
+BEGINSEED = 30000
+CAMPAIGN = UL18
+EOSPATH = root://eoscms.cern.ch//store/cmst3/group/vhcc/sfTuples/ext/$(PROCNAME)/20$(CAMPAIGN)MiniAODv2/miniv2_$(Cluster)-$(Process).root
+Arguments = $(JOBNUM) $(NEVENT) $(NEVENTLUMIBLOCK) $(NTHREAD) $(PROCNAME) $(CAMPAIGN) $(BEGINSEED) $(EOSPATH) $(LHEPRODSCRIPT)
+Queue JOBNUM from seq 1 500 |
