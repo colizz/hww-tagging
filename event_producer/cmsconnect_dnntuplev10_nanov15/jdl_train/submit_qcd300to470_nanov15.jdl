@@ -1,0 +1,37 @@
+Universe   = vanilla
+Executable = run_dnntuples.sh
+
++ProjectName="cms.org.fnal"
+
+
+PROCABBR = qcd300to470
+PROCNAME = QCD_PT_300to470_TuneCP5_13p6TeV_pythia8
+
+CMSRUNARGS = 'isTrainSample=1 addLowLevel=1'
+EOSPATH = root://cceos.ihep.ac.cn//eos/ihep/cms/store/user/yiyangz/Research/CMS_VVV_Scouting/$(PROCNAME)/DNNtupleNanov15/dnnTuples_nanov15_$(Cluster)-$(Process).root
+
+# on lxplus condor: can use local CMSSW dir
+WORKAREA = new
+
+# cannot remove " because $(CMSRUNARGS) has white spaces in it
+Arguments = "$(WORKAREA) $(Infiles) $(CMSRUNARGS) $(EOSPATH)"
+
+# on lxplus condor: can use local CMSSW dir
+Requirements = HAS_SINGULARITY == True
++SingularityImage = "/cvmfs/unpacked.cern.ch/registry.hub.docker.com/cmssw/el8:x86_64"
+request_cpus = 1
+request_memory = 1024
+use_x509userproxy = true
+
++JobFlavour = "tomorrow"
+
+Log        = log/job.log_$(Cluster)
+Output     = log/job.out_$(Cluster)-$(Process)
+Error      = log/job.err_$(Cluster)-$(Process)
+
+should_transfer_files   = YES
+when_to_transfer_output = ON_EXIT_OR_EVICT
+transfer_output_files   = dummy.cc
+
+
+Queue Infiles from samples/mc_2024winter_$(PROCABBR)_filelist.txt
