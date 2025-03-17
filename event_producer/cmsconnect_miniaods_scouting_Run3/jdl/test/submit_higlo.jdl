@@ -5,10 +5,10 @@ Executable = run_and_transfer.sh
 
 # custom args
 NEVENT = 500
-NEVENTLUMIBLOCK = 25
+NEVENTLUMIBLOCK = 500
 NTHREAD = 1
-PROCNAME = H3ToHpHmTo4Q_MX-600to6000_MH-15to650
-EOSPATH = root://cceos.ihep.ac.cn//eos/ihep/cms/store/user/yiyangz/Research/CMS_VVV_Scouting/$(PROCNAME)/latestMiniAODv6/miniv6_$(Cluster)-$(Process).root
+PROCNAME = BulkGravitonToHHTo4QGluLTau_MH-125_LowPt
+EOSPATH = root://cceos.ihep.ac.cn//eos/ihep/cms/store/user/yiyangz/Research/CMS_VVV_Scouting/$(PROCNAME)/MiniAODv6/miniv6_$(Cluster)-$(Process).root
 
 # note: use different seeds in different H->2prong and H->WW/ZZ routines to avoid overlap in LHE events
 BEGINSEED = 10000
@@ -32,4 +32,4 @@ should_transfer_files   = YES
 when_to_transfer_output = ON_EXIT_OR_EVICT
 transfer_output_files   = dummy.cc
 
-Queue JOBNUM from seq 1 1500 |
+Queue JOBNUM from seq 1 300 |
