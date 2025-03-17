@@ -7,7 +7,7 @@ Executable = run_and_transfer.sh
 NEVENT = 500
 NEVENTLUMIBLOCK = 500
 NTHREAD = 1
-PROCNAME = H3ToHpHmTo4Q_MH-125_HighPt
+PROCNAME = H3ToHpHmTo4Q_MH-80_HighPt
 EOSPATH = root://cceos.ihep.ac.cn//eos/ihep/cms/store/user/yiyangz/Research/CMS_VVV_Scouting/$(PROCNAME)/MiniAODv6/miniv6_$(Cluster)-$(Process).root
 
 # note: use different seeds in different H->2prong and H->WW/ZZ routines to avoid overlap in LHE events
