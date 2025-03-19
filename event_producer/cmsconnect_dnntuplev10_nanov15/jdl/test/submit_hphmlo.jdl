@@ -1,0 +1,38 @@
+Universe   = vanilla
+Executable = run_dnntuples.sh
+
+#+ProjectName="cms.org.fnal"
+
+
+PROCABBR = hphmlo
+PROCNAME = H3ToHpHmTo4Q_MH-80_LowPt
+
+CMSRUNARGS = 'isTrainSample=0 addLowLevel=1'
+EOSPATH = root://cceos.ihep.ac.cn//eos/ihep/cms/store/user/yiyangz/Research/CMS_VVV_Scouting/$(PROCNAME)/DNNtupleNanov15/dnnTuples_nanov15_$(Cluster)-$(Process).root
+
+# on lxplus condor: can use local CMSSW dir
+WORKAREA = new
+
+# cannot remove " because $(CMSRUNARGS) has white spaces in it
+Arguments = "$(WORKAREA) $(Infiles) $(CMSRUNARGS) $(EOSPATH)"
+
+# on lxplus condor: can use local CMSSW dir
+#Requirements = HAS_SINGULARITY == True
+#+SingularityImage = "/cvmfs/unpacked.cern.ch/registry.hub.docker.com/cmssw/el8:x86_64"
+request_cpus = 1
+request_memory = 1024
+x509userproxy = /afs/cern.ch/user/y/yiyangz/condor/hww-taging-main/hww-tagging/event_producer/cmsconnect_dnntuplev10_nanov15/x509up
+use_x509userproxy = true
++MaxRuntime = 172800
+
+Log        = log/job.log_$(Cluster)
+Output     = log/job.out_$(Cluster)-$(Process)
+Error      = log/job.err_$(Cluster)-$(Process)
+
+should_transfer_files   = YES
+when_to_transfer_output = ON_EXIT_OR_EVICT
+transfer_input_files = run_dnntuples.sh
+transfer_output_files   = dummy.cc
+
+
+Queue Infiles from samples/mc_2024_$(PROCABBR)_filelist.txt
