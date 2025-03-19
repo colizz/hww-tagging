@@ -8,7 +8,7 @@ PROCABBR = qcd1000to1400
 PROCNAME = QCD_PT_High_TuneCP5_13p6TeV_pythia8
 
 CMSRUNARGS = 'isTrainSample=0 addLowLevel=1'
-EOSPATH = root://cceos.ihep.ac.cn//eos/ihep/cms/store/user/yiyangz/Research/CMS_VVV_Scouting/test/qcd/$(PROCNAME)/DNNtupleNanov15/dnnTuples_nanov15_$(Cluster)-$(Process).root
+EOSPATH = root://cceos.ihep.ac.cn//eos/ihep/cms/store/user/yiyangz/Research/CMS_VVV_Scouting/$(PROCNAME)/DNNtupleNanov15/dnnTuples_nanov15_$(Cluster)-$(Process).root
 
 # on lxplus condor: can use local CMSSW dir
 WORKAREA = new
