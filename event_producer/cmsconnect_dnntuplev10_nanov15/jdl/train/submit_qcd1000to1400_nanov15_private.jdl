@@ -4,11 +4,11 @@ Executable = run_dnntuples.sh
 +ProjectName="cms.org.fnal"
 
 
-PROCABBR = higgs2p
-PROCNAME = BulkGravitonToHHTo4QGluLTau_MX-600to6000_MH-15to650
+PROCABBR = qcd1000to1400
+PROCNAME = QCD_PT-1000to1400_TuneCP5_13p6TeV_pythia8
 
 CMSRUNARGS = 'isTrainSample=1 addLowLevel=1'
-EOSPATH = root://cceos.ihep.ac.cn//eos/ihep/cms/store/user/yiyangz/Research/CMS_VVV_Scouting/$(PROCNAME)/DNNtupleNanov15/dnnTuples_nanov15_$(Cluster)-$(Process).root
+EOSPATH = root://cceos.ihep.ac.cn//eos/ihep/cms/store/user/yiyangz/Research/CMS_VVV_Scouting/qcd/$(PROCNAME)/DNNtupleNanov15/dnnTuples_nanov15_$(Cluster)-$(Process).root
 
 # on lxplus condor: can use local CMSSW dir
 WORKAREA = new

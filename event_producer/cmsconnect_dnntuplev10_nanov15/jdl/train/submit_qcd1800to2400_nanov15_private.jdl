@@ -4,11 +4,11 @@ Executable = run_dnntuples.sh
 +ProjectName="cms.org.fnal"
 
 
-PROCABBR = qcd1400to1800
-PROCNAME = QCD_PT_1400to1800_TuneCP5_13p6TeV_pythia8
+PROCABBR = qcd1800to2400
+PROCNAME = QCD_PT-1800to2400_TuneCP5_13p6TeV_pythia8
 
 CMSRUNARGS = 'isTrainSample=1 addLowLevel=1'
-EOSPATH = root://cceos.ihep.ac.cn//eos/ihep/cms/store/user/yiyangz/Research/CMS_VVV_Scouting/$(PROCNAME)/DNNtupleNanov15/dnnTuples_nanov15_$(Cluster)-$(Process).root
+EOSPATH = root://cceos.ihep.ac.cn//eos/ihep/cms/store/user/yiyangz/Research/CMS_VVV_Scouting/qcd/$(PROCNAME)/DNNtupleNanov15/dnnTuples_nanov15_$(Cluster)-$(Process).root
 
 # on lxplus condor: can use local CMSSW dir
 WORKAREA = new
@@ -34,4 +34,4 @@ when_to_transfer_output = ON_EXIT_OR_EVICT
 transfer_output_files   = dummy.cc
 
 
-Queue Infiles from samples/mc_2024winter_$(PROCABBR)_filelist.txt
+Queue Infiles from samples/mc_2024_$(PROCABBR)_filelist.txt
