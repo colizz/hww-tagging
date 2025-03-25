@@ -4,11 +4,11 @@ Executable = run_dnntuples.sh
 +ProjectName="cms.org.fnal"
 
 
-PROCABBR = qcd470to600
+PROCABBR = qcdlo
 PROCNAME = QCD_PT-Low_TuneCP5_13p6TeV_pythia8
 
-CMSRUNARGS = 'isTrainSample=0 addLowLevel=1'
-EOSPATH = root://cceos.ihep.ac.cn//eos/ihep/cms/store/user/yiyangz/Research/CMS_VVV_Scouting/test/qcd/$(PROCNAME)/DNNtupleNanov15/dnnTuples_nanov15_$(Cluster)-$(Process).root
+CMSRUNARGS = 'isTrainSample=0 addLowLevel=1 keepAllEvents=1'
+EOSPATH = root://cceos.ihep.ac.cn//eos/ihep/cms/store/user/yiyangz/Research/CMS_VVV_Scouting/qcd/test/$(PROCNAME)/DNNtupleNanov15/dnnTuples_nanov15_$(Cluster)-$(Process).root
 
 # on lxplus condor: can use local CMSSW dir
 WORKAREA = new
