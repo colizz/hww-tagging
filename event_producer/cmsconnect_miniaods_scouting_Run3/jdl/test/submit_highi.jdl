@@ -1,15 +1,15 @@
 Universe   = vanilla
-Executable = run_and_transfer.sh
+Executable = run_and_transfer_2022.sh
 
 # custom args
 NEVENT = 500
 NEVENTLUMIBLOCK = 500
 NTHREAD = 1
 PROCNAME = BulkGravitonToHHTo4QGluLTau_MH-125_HighPt
-EOSPATH = root://cceos.ihep.ac.cn//eos/ihep/cms/store/user/yiyangz/Research/CMS_VVV_Scouting/$(PROCNAME)/MiniAODv6/miniv6_$(Cluster)-$(Process).root
+EOSPATH = root://cceos.ihep.ac.cn//eos/ihep/cms/store/user/yiyangz/Research/CMS_VVV_Scouting/2022/$(PROCNAME)/MiniAODv6/miniv6_$(Cluster)-$(Process).root
 
 # note: use different seeds in different H->2prong and H->WW/ZZ routines to avoid overlap in LHE events
-BEGINSEED = 10000
+BEGINSEED = 10020
 
 Arguments = $(JOBNUM) $(NEVENT) $(NEVENTLUMIBLOCK) $(NTHREAD) $(PROCNAME) $(BEGINSEED) $(EOSPATH) $(LHEPRODSCRIPT)
 
@@ -37,4 +37,4 @@ Requirements = HAS_SINGULARITY == True
 #+MaxRuntime = 172800
 #transfer_input_files = run_and_transfer.sh 
 
-Queue JOBNUM from seq 1 300 |
+Queue JOBNUM from seq 1 150 |

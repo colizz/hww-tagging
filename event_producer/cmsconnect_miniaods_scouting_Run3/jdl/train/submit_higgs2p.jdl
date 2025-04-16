@@ -1,5 +1,5 @@
 Universe   = vanilla
-Executable = run_and_transfer.sh
+Executable = run_and_transfer_2022.sh
 
 +ProjectName="cms.org.fnal"
 
@@ -11,7 +11,7 @@ PROCNAME = BulkGravitonToHHTo4QGluLTau_MX-600to6000_MH-15to650
 EOSPATH = root://cceos.ihep.ac.cn//eos/ihep/cms/store/user/yiyangz/Research/CMS_VVV_Scouting/2022/$(PROCNAME)/MiniAODv6/miniv6_$(Cluster)-$(Process).root
 
 # note: use different seeds in different H->2prong and H->WW/ZZ routines to avoid overlap in LHE events
-BEGINSEED = 10001
+BEGINSEED = 10002
 
 Arguments = $(JOBNUM) $(NEVENT) $(NEVENTLUMIBLOCK) $(NTHREAD) $(PROCNAME) $(BEGINSEED) $(EOSPATH) $(LHEPRODSCRIPT)
 

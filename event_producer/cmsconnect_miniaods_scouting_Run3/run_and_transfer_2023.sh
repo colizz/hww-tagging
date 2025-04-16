@@ -86,8 +86,8 @@ cd $WORKDIR
 # SEED=$((${BEGINSEED} + ${JOBNUM}))
 SEED=$(((${BEGINSEED} + ${JOBNUM}) * 100))
 
-GLOBALTAG=130X_mcRun3_2023_realistic_postBPix_v2
-GLOBALTAG_SKIM=150X_mcRun3_2024_realistic_v1
+GLOBALTAG=130X_mcRun3_2023_realistic_v14
+GLOBALTAG_SKIM=130X_mcRun3_2023_realistic_v14
 
 ## NanoGEN
 # cmsDriver.py Configuration/GenProduction/python/${PROCNAME}.py --python_filename wmLHEGENNANO_cfg.py --eventcontent NANOAODGEN --customise Configuration/DataProcessing/Utils.addMonitoring --datatier NANOAOD --customise_commands process.RandomNumberGeneratorService.generator.initialSeed="int(${SEED})"\\nprocess.source.numberEventsInLuminosityBlock="cms.untracked.uint32(100)" --fileout file:lhegennano.root --conditions 140X_mcRun3_2024_realistic_v26 --beamspot Realistic25ns13TeVEarly2017Collision --step LHE,GEN,NANOGEN --geometry DB:Extended --era Run2_2017 --mc -n $NEVENT --nThreads $NTHREAD || exit $? ;
@@ -106,7 +106,7 @@ cmsDriver.py Configuration/GenProduction/python/${PROCNAME}.py --python_filename
 # begin DRPremix
 # cmsDriver.py --python_filename DIGIPremix_cfg.py --eventcontent PREMIXRAW --customise Configuration/DataProcessing/Utils.addMonitoring --datatier GEN-SIM-DIGI --fileout file:digi.root --pileup_input "dbs:/Neutrino_E-10_gun/RunIISummer20ULPrePremix-UL17_140X_mcRun3_2024_realistic_v26-v3/PREMIX" --conditions 140X_mcRun3_2024_realistic_v26 --step DIGI,DATAMIX,L1,DIGI2RAW --procModifiers premix_stage2 --geometry DB:Extended --filein file:sim.root --datamix PreMix --era Run2_2017 --runUnscheduled --mc --nThreads $NTHREAD -n $NEVENT > digi.log 2>&1 || exit $? ; # too many output, log into file 
 # using provided DIGIPremix cfg
-cmsRun inputs/scripts/DIGIPremix_Run3_2023BPix_template_cfg.py maxEvents=$NEVENT nThreads=$NTHREAD
+cmsRun inputs/scripts/DIGIPremix_Run3_2023_template_cfg.py maxEvents=$NEVENT nThreads=$NTHREAD
 
 cmsDriver.py  --python_filename RECO_cfg.py --eventcontent AODSIM --customise Configuration/DataProcessing/Utils.addMonitoring --datatier AODSIM --fileout file:reco.root --conditions $GLOBALTAG --step RAW2DIGI,L1Reco,RECO,RECOSIM --geometry DB:Extended --filein file:hlt.root --era Run3_2023 --mc --nThreads $NTHREAD -n $NEVENT || exit $? ;
 
