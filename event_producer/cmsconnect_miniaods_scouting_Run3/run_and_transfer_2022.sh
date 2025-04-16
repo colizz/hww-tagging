@@ -111,16 +111,16 @@ cmsRun inputs/scripts/DIGIPremix_Run3_2022_template_cfg.py maxEvents=$NEVENT nTh
 cmsDriver.py  --python_filename RECO_cfg.py --eventcontent AODSIM --customise Configuration/DataProcessing/Utils.addMonitoring --datatier AODSIM --fileout file:reco.root --conditions $GLOBALTAG --step RAW2DIGI,L1Reco,RECO,RECOSIM --geometry DB:Extended --filein file:hlt.root --era Run3 --mc --nThreads $NTHREAD -n $NEVENT || exit $? ;
 
 # Change to CMSSW_15_0_0_pre3 before SKIM
-export SCRAM_ARCH=el8_amd64_gcc12
-if [ -r $RELEASE_SKIM/src ] ; then
-  echo release $RELEASE_SKIM already exists
-else
-  scram p CMSSW $RELEASE_SKIM
-fi
-cd $RELEASE_SKIM/src
-eval `scram runtime -sh`
-CMSSW_BASE_ORIG=${CMSSW_BASE}
-cd $WORKDIR
+#export SCRAM_ARCH=el8_amd64_gcc12
+#if [ -r $RELEASE_SKIM/src ] ; then
+#  echo release $RELEASE_SKIM already exists
+#else
+#  scram p CMSSW $RELEASE_SKIM
+#fi
+#cd $RELEASE_SKIM/src
+#eval `scram runtime -sh`
+#CMSSW_BASE_ORIG=${CMSSW_BASE}
+#cd $WORKDIR
 
 # Run MiniAODv6 with -j FrameworkJobReport.xml 
 cmsDriver.py  --python_filename MiniAODv6_cfg.py --eventcontent MINIAODSIM --customise Configuration/DataProcessing/Utils.addMonitoring --datatier MINIAODSIM --fileout file:miniv6.root --conditions $GLOBALTAG_SKIM --step PAT --geometry DB:Extended --filein file:reco.root --era Run3 --no_exec --mc --nThreads $NTHREAD -n $NEVENT || exit $? ;
