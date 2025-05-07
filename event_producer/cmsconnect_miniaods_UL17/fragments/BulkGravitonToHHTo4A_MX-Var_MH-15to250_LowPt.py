@@ -18,27 +18,7 @@ generator = cms.EDFilter("Pythia8GeneratorFilter",
 import numpy as np
 # low mass list
 low_m_higgs = np.array([15, 20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250])
-
-# high mass list
-m_higgs = np.arange(260, 660, 10)
-# # minimum m_res changes s.t. it is always > 2x m_higgs to avoid off-shell Higgses
-# m_res_min = np.linspace(600, 1600, len(m_higgs))  
-
-# reweight points such that there are the same number of events at 260 as 250 GeV
-# and then continuously decrease the weight from there till 650 GeV
 num_low_points = float(len(low_m_higgs))
-num_high_points = float(len(m_higgs))
-
-# solve system of equations s.t. 1) total weight sums to 1, and 2) the first weight is 1 / (# of low points) i.e. same # of events as 260 GeV
-m = np.array([[num_high_points, num_high_points * (num_high_points - 1) / 2], [1, num_high_points]])
-b = np.array([1.0, 1.0 / num_low_points])
-# a is smallest weight, d is spacing between weights
-a, d = np.linalg.solve(m, b)
-
-
-def mh_weight(mh):
-    idx = np.where(m_higgs == mh)[0][0]
-    return a + d * (len(m_higgs) - idx - 1)
 
 
 def mres_lowpt_points(mh):
@@ -73,13 +53,6 @@ def pset(mx, mh, weight):
 # append low-mass points
 for mh in low_m_higgs:
     weight = 1.0 / num_low_points # the previous setting is problematic. should not use 1.0 but 1.0/num_low_points
-    for mx in mres_lowpt_points(mh):
-        print('BulkGravitonToHH_MX%.0f_MH%.0f weight %.4f' % (mx, mh, weight))
-        generator.RandomizedParameters.append(pset(mx, mh, weight))
-
-# append high-mass points
-for mh in m_higgs:
-    weight = mh_weight(mh)
     for mx in mres_lowpt_points(mh):
         print('BulkGravitonToHH_MX%.0f_MH%.0f weight %.4f' % (mx, mh, weight))
         generator.RandomizedParameters.append(pset(mx, mh, weight))

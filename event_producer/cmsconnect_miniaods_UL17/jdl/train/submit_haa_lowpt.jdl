@@ -6,7 +6,7 @@ Executable = run_and_transfer.sh
 # custom args
 NEVENT = 500
 NTHREAD = 1
-PROCNAME = BulkGravitonToHHTo4A_MX-Var_MH-15to650_LowPt
+PROCNAME = BulkGravitonToHHTo4A_MX-Var_MH-15to250_LowPt
 EOSPATH = root://eoscms.cern.ch//store/cmst3/group/vhcc/sfTuples/$(PROCNAME)/20UL17MiniAODv2/miniv2_$(Cluster)-$(Process).root
 # this dictates how often the config will change (i.e., how often different H, X masses are sampled)
 NEVENTLUMIBLOCK = 50
@@ -34,5 +34,5 @@ should_transfer_files   = YES
 when_to_transfer_output = ON_EXIT_OR_EVICT
 transfer_output_files   = dummy.cc
 
-# 1/2 of inclusive prod (4000 for haa)
-Queue JOBNUM from seq 1 2000 |
+# 1/4 of inclusive prod (4000 for haa)
+Queue JOBNUM from seq 1 1000 |
