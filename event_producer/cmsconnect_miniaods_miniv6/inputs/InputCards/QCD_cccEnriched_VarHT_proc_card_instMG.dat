@@ -1,0 +1,10 @@
+import model sm-ckm_no_b_mass
+define p = p b b~
+define j = p
+define cquark = c c~
+
+# Specify process(es) to run
+generate p p > cquark cquark cquark @0
+
+# Output processes to MadEvent directory
+output QCD_cccEnriched_VarHT -nojpeg

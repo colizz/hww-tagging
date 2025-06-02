@@ -1,0 +1,2 @@
+set htjmin $1
+set htjmax $2
