@@ -77,19 +77,20 @@ def pset(mx, mh, weight):
 
 # append low-mass points and low-pt points
 for mh in low_m_higgs:
-    weight = 1.0 / num_low_points * 0.25 # the previous setting is problematic. should not use 1.0 but 1.0/num_low_points * 0.25, keep the same ratio.
+    weight = 1.0 / num_low_points # the previous setting is problematic. should not use 1.0 but 1.0/num_low_points.
+    weight_lowpt = 0.5 * weight
     for mx in low_m_res:
         # print('BulkGravitonToHH_MX%.0f_MH%.0f weight %.4f' % (mx, mh, weight))
         generator.RandomizedParameters.append(pset(mx, mh, weight))
     
     for mx in mres_lowpt_points(mh):
         # print('BulkGravitonToHH_MX%.0f_MH%.0f weight %.4f' % (mx, mh, weight))
-        generator.RandomizedParameters.append(pset(mx, mh, weight))
+        generator.RandomizedParameters.append(pset(mx, mh, weight_lowpt))
 
 # append high-mass points twice
 for mh in m_higgs:
     m_res = np.linspace(mres_min(mh), mres_min(mh) * 10, len(low_m_res), endpoint=False)
-    weight = 2 * mh_weight(mh)
+    weight = mh_weight(mh)
     for mx in m_res:
         # print('BulkGravitonToHH_MX%.0f_MH%.0f weight %.4f' % (mx, mh, weight))
         generator.RandomizedParameters.append(pset(mx, mh, weight))
