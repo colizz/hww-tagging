@@ -89,10 +89,9 @@ for mh in low_m_higgs:
 # append high-mass points twice
 for mh in m_higgs:
     m_res = np.linspace(mres_min(mh), mres_min(mh) * 10, len(low_m_res), endpoint=False)
-    weight = mh_weight(mh)
+    weight = 2 * mh_weight(mh)
     for mx in m_res:
         # print('BulkGravitonToHH_MX%.0f_MH%.0f weight %.4f' % (mx, mh, weight))
-        generator.RandomizedParameters.append(pset(mx, mh, weight))
         generator.RandomizedParameters.append(pset(mx, mh, weight))
 
     
