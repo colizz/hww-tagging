@@ -111,8 +111,9 @@ cmsDriver.py Configuration/GenProduction/python/${PROCNAME}.py --era Run3_2023 -
 # cmsDriver.py Configuration/GenProduction/python/${PROCNAME}.py --python_filename GS_cfg.py --eventcontent RAWSIM --customise Configuration/DataProcessing/Utils.addMonitoring --datatier GEN-SIM --fileout file:gensim.root --conditions $GLOBALTAG --beamspot DBrealistic --customise_commands process.RandomNumberGeneratorService.generator.initialSeed="int(${SEED})"\\nprocess.source.numberEventsInLuminosityBlock="cms.untracked.uint32(${NEVENTLUMIBLOCK})" --step GEN,SIM --geometry DB:Extended --era Run3_2024 --mc --nThreads $NTHREAD -n $NEVENT || exit $? ;
 
 # begin DRPremix
-# cmsDriver.py --python_filename DIGIPremix_cfg.py --eventcontent PREMIXRAW --customise Configuration/DataProcessing/Utils.addMonitoring --datatier GEN-SIM-DIGI --fileout file:digi.root --pileup_input "dbs:/Neutrino_E-10_gun/RunIISummer20ULPrePremix-UL17_140X_mcRun3_2024_realistic_v26-v3/PREMIX" --conditions 140X_mcRun3_2024_realistic_v26 --step DIGI,DATAMIX,L1,DIGI2RAW --procModifiers premix_stage2 --geometry DB:Extended --filein file:sim.root --datamix PreMix --era Run2_2017 --runUnscheduled --mc --nThreads $NTHREAD -n $NEVENT > digi.log 2>&1 || exit $? ; # too many output, log into file 
+# cmsDriver.py  --eventcontent PREMIXRAW --customise Configuration/DataProcessing/Utils.addMonitoring --datatier GEN-SIM-RAW --conditions $GLOBALTAG --step DIGI,DATAMIX,L1,DIGI2RAW,HLT:2023v12 --procModifiers premix_stage2 --geometry DB:Extended --datamix PreMix --era Run3_2023 --python_filename RECO_cfg.py --fileout file:reco.root --filein file:gensim.root --pileup_input "dbs:/Neutrino_E-10_gun/Run3Summer21PrePremix-Summer23_130X_mcRun3_2023_realistic_v13-v1/PREMIX" --mc --nThreads $NTHREAD -n $NEVENT || exit $? ;
 # using provided DIGIPremix cfg
+
 cmsRun inputs/scripts/DIGIPremix_Run3_2023_template_cfg.py maxEvents=$NEVENT nThreads=$NTHREAD
 
 cmsDriver.py  --python_filename RECO_cfg.py --eventcontent AODSIM --customise Configuration/DataProcessing/Utils.addMonitoring --datatier AODSIM --fileout file:reco.root --conditions $GLOBALTAG --step RAW2DIGI,L1Reco,RECO,RECOSIM --geometry DB:Extended --filein file:hlt.root --era Run3_2023 --mc --nThreads $NTHREAD -n $NEVENT || exit $? ;
@@ -129,10 +130,10 @@ cmsDriver.py  --python_filename RECO_cfg.py --eventcontent AODSIM --customise Co
 # cd $WORKDIR
 
 # Run MiniAODv6 with -j FrameworkJobReport.xml 
-cmsDriver.py  --python_filename MiniAODv6_cfg.py --eventcontent MINIAODSIM --customise Configuration/DataProcessing/Utils.addMonitoring --datatier MINIAODSIM --fileout file:miniv6.root --conditions $GLOBALTAG_SKIM --step PAT --geometry DB:Extended --filein file:reco.root --era Run3_2023 --no_exec --mc --nThreads $NTHREAD -n $NEVENT || exit $? ;
-cmsRun -j FrameworkJobReport.xml MiniAODv6_cfg.py
+cmsDriver.py  --python_filename MiniAODv4_cfg.py --eventcontent MINIAODSIM --customise Configuration/DataProcessing/Utils.addMonitoring --datatier MINIAODSIM --fileout file:miniv4.root --conditions $GLOBALTAG_SKIM --step PAT --geometry DB:Extended --filein file:reco.root --era Run3_2023 --no_exec --mc --nThreads $NTHREAD -n $NEVENT || exit $? ;
+cmsRun -j FrameworkJobReport.xml MiniAODv4_cfg.py
 # Transfer file
-xrdcp --silent -p -f miniv6.root $EOSPATH
+xrdcp --silent -p -f miniv4.root $EOSPATH
 touch dummy.cc
 
 # ############ Start DNNTuples ############
