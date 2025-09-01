@@ -6,16 +6,16 @@ Executable = run_and_transfer.sh
 # custom args
 NEVENT = 500
 NTHREAD = 1
-PROCNAME = BulkGravitonToHHTo4W_MX-Var_MH-15to250_LowPt_JHUVariableWMass
+PROCNAME = BulkGravitonToHHTo4Z_MX-Var_MH-15to250_LowPt_JHUVariableZMass
 EOSPATH = root://eoscms.cern.ch//store/cmst3/group/vhcc/sfTuples/$(PROCNAME)/20UL17MiniAODv2/miniv2_$(Cluster)-$(Process).root
 # this dictates how often the config will change (i.e., how often different H, X masses are sampled)
 NEVENTLUMIBLOCK = 50
 
 # note: use different seeds for identical MG routines to avoid overlap in LHE events
-BEGINSEED = 528000
+BEGINSEED = 552000
 
 # special LHE production configs for HWW/HZZ
-LHEPRODSCRIPT = run_instMG_reuseSw_JHUVariableWMassFixRatio.sh
+LHEPRODSCRIPT = run_instMG_reuseSw_JHUVariableZMassFixRatio.sh
 
 Arguments = $(JOBNUM) $(NEVENT) $(NEVENTLUMIBLOCK) $(NTHREAD) $(PROCNAME) $(BEGINSEED) $(EOSPATH) $(LHEPRODSCRIPT)
 
@@ -42,4 +42,4 @@ when_to_transfer_output = ON_EXIT_OR_EVICT
 transfer_output_files   = dummy.cc
 
 # for nominal H->WW, lower+low+high = 12000+24000+24000
-Queue JOBNUM from seq 1 12000 |
+Queue JOBNUM from seq 1 6000 |
