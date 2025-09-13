@@ -15,7 +15,7 @@ NEVENTLUMIBLOCK = 50
 BEGINSEED = 558000
 
 # special LHE production configs for HWW/HZZ
-LHEPRODSCRIPT = run_instMG_reuseSw_JHUVariableZMassFixRatio2DMesh.sh
+LHEPRODSCRIPT = run_instMG_reuseSw_JHUVariableZMass2DMesh.sh
 
 Arguments = $(JOBNUM) $(NEVENT) $(NEVENTLUMIBLOCK) $(NTHREAD) $(PROCNAME) $(BEGINSEED) $(EOSPATH) $(LHEPRODSCRIPT)
 
