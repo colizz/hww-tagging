@@ -22,8 +22,6 @@ low_m_res = np.arange(600, 6000, 100)
 
 # high mass list
 m_top = np.arange(260, 660, 10)
-m_z = 0.53 * m_top
-m_z[m_z < 80] = 80  # to avoid unphysical m_w
 
 # reweight points such that there are the same number of events at 260 as 250 GeV
 # and then continuously decrease the weight from there till 650 GeV
@@ -35,6 +33,11 @@ m = np.array([[num_high_points, num_high_points * (num_high_points - 1) / 2], [1
 b = np.array([1.0, 1.0 / num_low_points])
 # a is smallest weight, d is spacing between weights
 a, d = np.linalg.solve(m, b)
+
+def mres_lowpt_points(mh, n=20):
+    m_lo = np.sqrt(mh**2 + 150**2) * 2
+    m_hi = np.sqrt(mh**2 + 600**2) * 2
+    return np.linspace(m_lo, m_hi, n)
 
 
 def mh_weight(mh):
@@ -48,26 +51,31 @@ def mres_min(mh):
     return np.sqrt(mdel + 4 * mh ** 2)
 
 
-for mt in m_top:
-    mz = mt * 0.53
-    ww = mz
-    m_res = np.linspace(mres_min(mt), mres_min(mt) * 10, len(low_m_res), endpoint=False)
-    for mx in m_res:
-        wx = mx / 100.
-        print('SpinToTT_VariableMass_WlepWlep_MX%.0f_WX%.0f_MH%.0f_MZ%.1f_WW80' % (mx, wx, mt, mz))
-        generator.RandomizedParameters.append(
-            cms.PSet(
-                ConfigWeight = cms.double(mh_weight(mt)),
-                GridpackPath =  cms.string('instMG://Spin0ToTT_VariableMass_WlepWlep/MG5_aMC_v2.6.5/%.0f:%.0f:%.0f:%.1f:%.1f' % (mx, wx, mt, mz, ww)),
-                ConfigDescription = cms.string('Spin0ToTT_VariableMass_WlepWlep_MX%.0f_WX%.0f_MH%.0f_MZ%.1f_WW%.1f' % (mx, wx, mt, mz, ww)),
-                PythiaParameters = cms.PSet(
-                    pythia8CommonSettingsBlock,
-                    pythia8CP5SettingsBlock,
-                    pythia8PSweightsSettingsBlock,
-                    parameterSets = cms.vstring('pythia8CommonSettings',
-                                                'pythia8CP5Settings',
-                                                'pythia8PSweightsSettings',
-                    )
-                )
+def pset(mx, wx, mt, mz, ww, weight):
+    return cms.PSet(
+        ConfigWeight = cms.double(weight),
+        GridpackPath =  cms.string('instMG://Spin0ToTT_VariableMass_WlepWlep/MG5_aMC_v2.6.5/%.0f:%.0f:%.0f:%.1f:%.1f' % (mx, wx, mt, mz, ww)),
+        ConfigDescription = cms.string('Spin0ToTT_VariableMass_WlepWlep_MX%.0f_WX%.0f_MH%.0f_MZ%.1f_WW%.1f' % (mx, wx, mt, mz, ww)),
+        PythiaParameters = cms.PSet(
+            pythia8CommonSettingsBlock,
+            pythia8CP5SettingsBlock,
+            pythia8PSweightsSettingsBlock,
+            parameterSets = cms.vstring(
+                'pythia8CommonSettings',
+                'pythia8CP5Settings',
+                'pythia8PSweightsSettings',
             )
         )
+    )
+
+for mt in low_m_top:
+    mz = max(mt * 0.53, 80.)  # to avoid unphysical m_w
+    ww = mz
+    weight = 1.0 / num_low_points # the previous setting is problematic. should not use 1.0 but 1.0/num_low_points.
+    # lower pT points
+    # note: should ensure that the base sum(weights) for low and lower pT points is equal
+    #   then set low:lower = 1:0.5
+    for mx in mres_lowpt_points(mt, n=len(low_m_res)):
+        wx = mx / 100.
+        print('SpinToTT_VariableMass_WlepWlep_MX%.0f_WX%.0f_MH%.0f_MZ%.1f_WW%.1f' % (mx, wx, mt, mz, ww))
+        generator.RandomizedParameters.append(pset(mx, wx, mt, mz, ww, 0.5*weight))
