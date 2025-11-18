@@ -178,4 +178,12 @@ cmsDriver.py --python_filename MiniAODv2_cfg.py --eventcontent MINIAODSIM --cust
 
 # Transfer file
 xrdcp --silent -p -f miniv2.root $EOSPATH
+
+# ######## Custom: Run NanoAODv9 ########
+# cmsDriver.py --python_filename NanoAODv9_cfg.py --eventcontent NANOAODSIM --customise Configuration/DataProcessing/Utils.addMonitoring --datatier NANOAODSIM --fileout file:nanov9.root --conditions $CAMPAIGN_GLOBALTAGMINI --step NANO --filein file:miniv2.root --era ${CAMPAIGN_ERA},run2_nanoAOD_106Xv2 --mc --nThreads $NTHREAD -n $NEVENT || exit $? ;
+
+# # Transfer file
+# xrdcp --silent -p -f nanov9.root ${EOSPATH/miniv2/nanov9}
+# #######################################
+
 touch dummy.cc
