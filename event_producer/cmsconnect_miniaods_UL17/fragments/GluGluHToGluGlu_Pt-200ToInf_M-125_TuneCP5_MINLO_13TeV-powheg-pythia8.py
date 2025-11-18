@@ -34,7 +34,7 @@ generator = cms.EDFilter("Pythia8ConcurrentHadronizerFilter",
                                    ## other than emitted extra parton                            	
             '25:m0 = 125.0',
             '25:onMode = off',
-            '25:onIfMatch = 21 -21', ## allow only H To glu glu decay 
+            '25:onIfMatch = 21 21', ## allow only H To glu glu decay 
           ),
         parameterSets = cms.vstring('pythia8CommonSettings',
                                     'pythia8CP5Settings',
