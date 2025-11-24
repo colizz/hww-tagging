@@ -179,11 +179,25 @@ cmsDriver.py --python_filename MiniAODv2_cfg.py --eventcontent MINIAODSIM --cust
 # Transfer file
 xrdcp --silent -p -f miniv2.root $EOSPATH
 
-# ######## Custom: Run NanoAODv9 ########
-# cmsDriver.py --python_filename NanoAODv9_cfg.py --eventcontent NANOAODSIM --customise Configuration/DataProcessing/Utils.addMonitoring --datatier NANOAODSIM --fileout file:nanov9.root --conditions $CAMPAIGN_GLOBALTAGMINI --step NANO --filein file:miniv2.root --era ${CAMPAIGN_ERA},run2_nanoAOD_106Xv2 --mc --nThreads $NTHREAD -n $NEVENT || exit $? ;
+# ######## Custom: Run NanoAODv9 (nanoTuples version w/ GloParTv2) ########
+# cd $WORKDIR/$RELEASE/src
+# git clone https://github.com/colizz/NanoTuples.git PhysicsTools/NanoTuples -b dev-part-UL
+# ./PhysicsTools/NanoTuples/scripts/install_onnxruntime.sh
+# wget --tries=3 https://coli.web.cern.ch/coli/tmp/.240120-181907_ak8_stage2/model.onnx -O $CMSSW_BASE/src/PhysicsTools/NanoTuples/data/InclParticleTransformer-MD/ak8/V02/model.onnx
+# scram b -j $NTHREAD
+# cd $WORKDIR
+
+# cmsDriver.py --python_filename NanoAODv9_cfg.py --eventcontent NANOAODSIM --customise PhysicsTools/NanoTuples/nanoTuples_cff.nanoTuples_customizeMC --datatier NANOAODSIM --fileout file:nanov9.root --conditions $CAMPAIGN_GLOBALTAGMINI --step NANO --filein file:miniv2.root --era ${CAMPAIGN_ERA},run2_nanoAOD_106Xv2 --mc --nThreads $NTHREAD -n $NEVENT || exit $? ;
 
 # # Transfer file
 # xrdcp --silent -p -f nanov9.root ${EOSPATH/miniv2/nanov9}
 # #######################################
+
+######## Custom: Run NanoAODv9 ########
+cmsDriver.py --python_filename NanoAODv9_cfg.py --eventcontent NANOAODSIM --customise Configuration/DataProcessing/Utils.addMonitoring --datatier NANOAODSIM --fileout file:nanov9.root --conditions $CAMPAIGN_GLOBALTAGMINI --step NANO --filein file:miniv2.root --era ${CAMPAIGN_ERA},run2_nanoAOD_106Xv2 --mc --nThreads $NTHREAD -n $NEVENT || exit $? ;
+
+# Transfer file
+xrdcp --silent -p -f nanov9.root ${EOSPATH/miniv2/nanov9}
+#######################################
 
 touch dummy.cc
