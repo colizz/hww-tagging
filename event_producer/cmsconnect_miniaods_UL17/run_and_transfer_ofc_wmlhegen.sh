@@ -57,6 +57,10 @@ cp $WORKDIR/fragments/${PROCNAME}.py Configuration/GenProduction/python/${PROCNA
 # NOTE: this routine does not specify NEVENT in the fragment
 # grep -q "__NEVENT__" Configuration/GenProduction/python/${PROCNAME}.py || exit $? ;
 sed "s/__NEVENT__/$NEVENT/g" -i Configuration/GenProduction/python/${PROCNAME}.py
+if ! [ -z $LHEPRODSCRIPT ]; then
+  mkdir -p Configuration/GenProduction/data
+  cp -f $WORKDIR/inputs/scripts/$LHEPRODSCRIPT Configuration/GenProduction/data/$LHEPRODSCRIPT
+fi
 eval `scram runtime -sh`
 scram b -j $NTHREAD
 
