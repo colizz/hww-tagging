@@ -1,0 +1,6 @@
+set param_card MASS 6000045 $1
+set param_card DECAY 6000045 1.000000e-03 
+set param_card FRBlock 1 1.000000e-03 
+set param_card MASS 6000046 $1
+set param_card DECAY 6000046 1.000000e-03 
+set param_card FRBlock 2 1.000000e-03 

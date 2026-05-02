@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 # Script to generate LHE events instantly from MG, without using tarball/gridpack.
 #   author: Congqiao Li
 
@@ -13,7 +13,10 @@ if [[ -d lheevent ]]
     rm -rf lheevent
 fi
 mkdir lheevent
+mkdir -p software
+
 WORKDIR=`pwd`/lheevent
+SWDIR=`pwd`/software
 INPUTDIR=`pwd`/inputs
 
 ## processing input
@@ -72,7 +75,7 @@ RNUM=${3}
 echo "%MSG-MG5 random seed used for the run = $RNUM"
 
 
-cd $WORKDIR
+cd $SWDIR
 
 ## setup environment
 export SCRAM_ARCH=el8_amd64_gcc11
@@ -89,51 +92,78 @@ eval `scram runtime -sh`
 # necessary config for LHAPDF
 export BOOSTINCLUDES=`scram tool tag boost INCLUDE`
 
-## initiate MadGraph
-cd $WORKDIR
-MGTAR=${MG_VERSION}.tar.gz
-if [[ ! -f $INPUTDIR/$MGTAR ]]; then
-  wget --no-check-certificate https://cms-project-generators.web.cern.ch/cms-project-generators/$MGTAR
-  tar xaf $MGTAR
-else
-  tar xaf $INPUTDIR/$MGTAR
+## initiate MadGraph (at the first run)
+cd $SWDIR
+MGBASEDIRORIG=$(echo ${MG_VERSION} | tr "." "_")
+LHAPDFCONFIG=`echo "$LHAPDF_DATA_PATH/../../bin/lhapdf-config"`
+
+if [[ ! -d $MGBASEDIRORIG ]]; then
+  MGTAR=${MG_VERSION}.tar.gz
+  if [[ ! -f $INPUTDIR/$MGTAR ]]; then
+    wget --no-check-certificate https://cms-project-generators.web.cern.ch/cms-project-generators/$MGTAR
+    tar xaf $MGTAR
+  else
+    tar xaf $INPUTDIR/$MGTAR
+  fi
+
+  # now enter MG base dir
+  cd $MGBASEDIRORIG
+
+  # apply patches
+  cat $INPUTDIR/patches/*.patch | patch -p1
+
+  # load model
+  cd models
+  for model in `\ls $INPUTDIR/model/`; do
+    if [[ $model == *".zip"* ]]; then
+      unzip $INPUTDIR/model/$model
+    elif [[ $model == *".tgz"* ]]; then
+      tar zxvf $INPUTDIR/model/$model
+    elif [[ $model == *".tar"* ]]; then
+      tar xavf $INPUTDIR/model/$model
+    fi
+  done
+  cd ..
+
+  ## config MG before first run
+  echo "set auto_update 0" > mgconfigscript
+  echo "set automatic_html_opening False" >> mgconfigscript
+  echo "set lhapdf_py3 $LHAPDFCONFIG" >> mgconfigscript
+  echo "set run_mode 0" >> mgconfigscript
+  echo "save options" >> mgconfigscript
+
+  ./bin/mg5_aMC mgconfigscript
+
+  ## output process folder
+  cp $INPUTDIR/InputCards/${PROC_NAME}_proc_card_instMG.dat proc_card.dat
+  sed -i "s|__FULLPATH__|${WORKDIR}/${MGBASEDIRORIG}/models|g" proc_card.dat
+  ./bin/mg5_aMC proc_card.dat
+  mv $PROC_NAME processtmp
+
+  cd $SWDIR
+
 fi
 
-MGBASEDIRORIG=$(echo ${MG_VERSION} | tr "." "_")
-cd $MGBASEDIRORIG
+## initiate JHUGen only once (at the first run)
 
-# apply patches
-cat $INPUTDIR/patches/*.patch | patch -p1
+if [ ! -f $INPUTDIR/JHUGenerator.tar.gz ]; then
+  echo "Download JHUGen..."
+  xrdcp root://cmseos.fnal.gov//store/user/lpcdihiggsboost/MINIAOD/ParTSamples/JHUGenerator.v7.5.0.tar.gz $INPUTDIR/JHUGenerator.tar.gz
+fi
 
-# load model
-cd models
-for model in `\ls $INPUTDIR/model/`; do
-  if [[ $model == *".zip"* ]]; then
-    unzip $INPUTDIR/model/$model
-  elif [[ $model == *".tgz"* ]]; then
-    tar zxvf $INPUTDIR/model/$model
-  elif [[ $model == *".tar"* ]]; then
-    tar xavf $INPUTDIR/model/$model
-  fi
-done
-cd ..
+JHUBASEDIRORIG=JHUGenerator.v7.5.0
+if [ ! -d $JHUBASEDIRORIG ]; then
+  tar xaf $INPUTDIR/JHUGenerator.tar.gz
 
-## config MG before first run
-echo "set auto_update 0" > mgconfigscript
-echo "set automatic_html_opening False" >> mgconfigscript
-LHAPDFCONFIG=`echo "$LHAPDF_DATA_PATH/../../bin/lhapdf-config"`
-echo "set lhapdf_py3 $LHAPDFCONFIG" >> mgconfigscript
-echo "set run_mode 0" >> mgconfigscript
-echo "save options" >> mgconfigscript
+  # compile
+  cd $JHUBASEDIRORIG/JHUGenerator
+  cp mod_Parameters.F90 mod_Parameters.F90.orig
+  make
+  cd $SWDIR
+fi
 
-./bin/mg5_aMC mgconfigscript
-
-## output process folder
-cp $INPUTDIR/InputCards/${PROC_NAME}_proc_card_instMG.dat proc_card.dat
-sed -i "s|__FULLPATH__|${WORKDIR}/${MGBASEDIRORIG}/models|g" proc_card.dat
-./bin/mg5_aMC proc_card.dat
-mv $PROC_NAME processtmp
-cd processtmp
+########## Now start generating events with specific GEN params #########
+cd $MGBASEDIRORIG/processtmp
 
 ## generate events
 # replace run card
@@ -162,54 +192,49 @@ echo "done" >> makegrid.dat
 cat makegrid.dat | ./bin/generate_events pilotrun --nb_core=1
 
 gzip -d ./Events/pilotrun/unweighted_events.lhe.gz
-mv ./Events/pilotrun/unweighted_events.lhe $WORKDIR/../cmsgrid_final.lhe
+mv ./Events/pilotrun/unweighted_events.lhe $WORKDIR/cmsgrid_final.lhe
 
 
-########## Do JHUGen job! ##########
-mv $WORKDIR/../cmsgrid_final.lhe $WORKDIR/
-cd $WORKDIR
+### Do JHUGen job! ###
+cd $SWDIR/JHUGenerator.v7.5.0/JHUGenerator
 
-if [ ! -f $INPUTDIR/JHUGenerator.tar.gz ]; then
-  echo "Download JHUGen..."
-  xrdcp root://cmseos.fnal.gov//store/user/lpcdihiggsboost/MINIAOD/ParTSamples/JHUGenerator.v7.5.0.tar.gz $INPUTDIR/JHUGenerator.tar.gz
-fi
-tar xaf $INPUTDIR/JHUGenerator.tar.gz
-
-## modify the Z mass to keep the mH/mZ ratio
+## modify the W mass to keep the mH/mW ratio
 # MH=$(echo $path | grep -P '(?<=_MH)\d+(?=_)' -o) # get MH from gridpack path
 MH=${ARGS[1]}
-alpha=$(echo "scale=3; $RANDOM/32768 * (1.5 - 0.3) + 0.3" | bc) # random coefficient from 0.3--1.5
-MZ=$(echo "scale=3; $MH / 125 * 80.399 * $alpha" | bc)
-sed -i "s/M_Z     = 91.1876d0/M_Z     = ${MZ}d0/g" JHUGenerator.v7.5.0/JHUGenerator/mod_Parameters.F90
-echo "%MSG-JHUGen modify the Z mass to ${MZ}. Input params: MH = ${MH}, alpha = ${alpha}"
+MW=$(echo "scale=3; $MH / 125 * 80.399" | bc)
+cp mod_Parameters.F90.orig mod_Parameters.F90
+sed -i "s/M_W     = 80.399d0/M_W     = ${MW}d0/g" mod_Parameters.F90
+echo "%MSG-JHUGen modify the W mass to ${MW}. Input params: MH = ${MH}"
 
-JHUBASE=`pwd`
-pushd JHUGenerator.v7.5.0/JHUGenerator/
+# re-compile with the updated parameters
 make
 
 # Run JHUGEN
-# prob(4q) : pro(llqq) = 1:2
+# prob(4q) : pro(lvqq) = 1:2
 CHOICE=(1 2 3)
 if [ ${CHOICE[RANDOM%3]} == "1" ]; then
-  JHUCMD="DecayMode1=1 DecayMode2=1"
+  JHUCMD="DecayMode1=5 DecayMode2=5"
 else
-  JHUCMD="DecayMode1=8 DecayMode2=1"
+  JHUCMD="DecayMode1=10 DecayMode2=5"
 fi
-SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 # 1. switch the two higgs boson
-python ${SCRIPT_DIR}/lhe_modifier.py -m switch -i ${JHUBASE}/cmsgrid_final.lhe -o ${JHUBASE}/cmsgrid_final_s.lhe
+python3 $INPUTDIR/scripts/lhe_modifier.py -m switch -i $WORKDIR/cmsgrid_final.lhe -o $WORKDIR/cmsgrid_final_s.lhe
 # 2. use JHUGen to decay the "last" higgs
-./JHUGen ReadLHE=${JHUBASE}/cmsgrid_final_s.lhe DataFile=${JHUBASE}/cmsgrid_final_s_jhu.lhe ${JHUCMD}
+./JHUGen ReadLHE=$WORKDIR/cmsgrid_final_s.lhe DataFile=$WORKDIR/cmsgrid_final_s_jhu.lhe ${JHUCMD}
 # 3. switch the two higgs boson again
-python ${SCRIPT_DIR}/lhe_modifier.py -m switch -i ${JHUBASE}/cmsgrid_final_s_jhu.lhe -o ${JHUBASE}/cmsgrid_final_s_jhu_s.lhe
+python3 $INPUTDIR/scripts/lhe_modifier.py -m switch -i $WORKDIR/cmsgrid_final_s_jhu.lhe -o $WORKDIR/cmsgrid_final_s_jhu_s.lhe
 # 4. use JHUGen to decay the "last" higgs (i.e. the real last higgs)
-./JHUGen ReadLHE=${JHUBASE}/cmsgrid_final_s_jhu_s.lhe DataFile=${JHUBASE}/cmsgrid_final_s_jhu_s_jhu.lhe ${JHUCMD}
+./JHUGen ReadLHE=$WORKDIR/cmsgrid_final_s_jhu_s.lhe DataFile=$WORKDIR/cmsgrid_final_s_jhu_s_jhu.lhe ${JHUCMD}
 # 5. correct the LHE
-python ${SCRIPT_DIR}/lhe_modifier.py -m correct -i ${JHUBASE}/cmsgrid_final_s_jhu_s_jhu.lhe -o ${JHUBASE}/cmsgrid_final_s_jhu_s_jhu_c.lhe
+python3 $INPUTDIR/scripts/lhe_modifier.py -m correct -i $WORKDIR/cmsgrid_final_s_jhu_s_jhu.lhe -o $WORKDIR/cmsgrid_final_s_jhu_s_jhu_c.lhe
 
-popd
-rm -rf cmsgrid_final.lhe
-mv cmsgrid_final_s_jhu_s_jhu_c.lhe $WORKDIR/../cmsgrid_final.lhe
+# Finalize the LHE file
+cd $WORKDIR
+rm -f cmsgrid_final.lhe
+mv cmsgrid_final_s_jhu_s_jhu_c.lhe cmsgrid_final.lhe
+
+# move outside of "lheevent"
+mv cmsgrid_final.lhe ../
 
 ########## END ##########
 

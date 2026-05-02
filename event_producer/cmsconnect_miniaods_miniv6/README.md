@@ -20,3 +20,15 @@ cd <...>/cmsconnect_miniaods_miniv6  # enter this dir
 mkdir log  # create the log dir
 condor_submit jdl/sfbdt/submit_qcd_flvenriched.jdl
 ```
+
+## Inference samples for validating GloParT under 24 era, for DPS note (2605)
+
+### Dev note:
+
+New setup for this miniv6 workflow, in `inputs/scripts`
+ - run_instMG.sh script adapted from Run 3 folder (cmsconnect_miniaods_Run3)
+ - JHU wrapper script updated to reuseSw version (those implemented in cmsconnect_miniaods_UL17)
+
+Submitted jobs, in `jdl/test`
+ - submit_infer_[hig3bin,hww3bin,w3bin,z3bin,t3bin]
+ - special note: new samples for BulkGrav to WW or ZZ, and massive Higgs (spin-0) to ttbar, produced for the first time (remember that in UL17 we use official BSM samples to collect W/Z/t jets)

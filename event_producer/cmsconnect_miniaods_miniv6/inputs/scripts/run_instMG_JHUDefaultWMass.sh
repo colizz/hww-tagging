@@ -189,15 +189,15 @@ else
 fi
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 # 1. switch the two higgs boson
-python ${SCRIPT_DIR}/lhe_modifier.py -m switch -i ${JHUBASE}/cmsgrid_final.lhe -o ${JHUBASE}/cmsgrid_final_s.lhe
+python3 ${SCRIPT_DIR}/lhe_modifier.py -m switch -i ${JHUBASE}/cmsgrid_final.lhe -o ${JHUBASE}/cmsgrid_final_s.lhe
 # 2. use JHUGen to decay the "last" higgs
 ./JHUGen ReadLHE=${JHUBASE}/cmsgrid_final_s.lhe DataFile=${JHUBASE}/cmsgrid_final_s_jhu.lhe ${JHUCMD}
 # 3. switch the two higgs boson again
-python ${SCRIPT_DIR}/lhe_modifier.py -m switch -i ${JHUBASE}/cmsgrid_final_s_jhu.lhe -o ${JHUBASE}/cmsgrid_final_s_jhu_s.lhe
+python3 ${SCRIPT_DIR}/lhe_modifier.py -m switch -i ${JHUBASE}/cmsgrid_final_s_jhu.lhe -o ${JHUBASE}/cmsgrid_final_s_jhu_s.lhe
 # 4. use JHUGen to decay the "last" higgs (i.e. the real last higgs)
 ./JHUGen ReadLHE=${JHUBASE}/cmsgrid_final_s_jhu_s.lhe DataFile=${JHUBASE}/cmsgrid_final_s_jhu_s_jhu.lhe ${JHUCMD}
 # 5. correct the LHE
-python ${SCRIPT_DIR}/lhe_modifier.py -m correct -i ${JHUBASE}/cmsgrid_final_s_jhu_s_jhu.lhe -o ${JHUBASE}/cmsgrid_final_s_jhu_s_jhu_c.lhe
+python3 ${SCRIPT_DIR}/lhe_modifier.py -m correct -i ${JHUBASE}/cmsgrid_final_s_jhu_s_jhu.lhe -o ${JHUBASE}/cmsgrid_final_s_jhu_s_jhu_c.lhe
 
 popd
 rm -rf cmsgrid_final.lhe
