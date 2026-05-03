@@ -15,9 +15,14 @@ BEGINSEED = 39100000
 
 Arguments = $(JOBNUM) $(NEVENT) $(NEVENTLUMIBLOCK) $(NTHREAD) $(PROCNAME) $(BEGINSEED) $(EOSPATH) $(LHEPRODSCRIPT)
 
-#requirements = (OpSysAndVer =?= "CentOS8")
-Requirements = HAS_SINGULARITY == True
-+SingularityImage = "/cvmfs/unpacked.cern.ch/registry.hub.docker.com/cmssw/el8:x86_64"
+## requirements = (OpSysAndVer =?= "CentOS8")
+# Requirements = HAS_SINGULARITY == True
+# +SingularityImage = "/cvmfs/unpacked.cern.ch/registry.hub.docker.com/cmssw/el8:x86_64"
+
+## for lxplus
+# MY.WantOS = "el8"
+# using el8 on lxplus reports an error; just use native el9
+
 request_cpus = 1
 request_memory = 2000
 use_x509userproxy = true

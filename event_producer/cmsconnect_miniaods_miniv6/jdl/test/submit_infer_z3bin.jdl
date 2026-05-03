@@ -14,14 +14,16 @@ EOSPATH = root://eoscms.cern.ch//store/cmst3/group/vhcc/sfTuples/$(PROCNAME)/24M
 # !! no need to reset for y > w+ w- or z z
 BEGINSEED = 39106000
 
-# special LHE production configs for HWW/HZZ
-LHEPRODSCRIPT = run_instMG_JHUDefaultWMass.sh
-
 Arguments = $(JOBNUM) $(NEVENT) $(NEVENTLUMIBLOCK) $(NTHREAD) $(PROCNAME) $(BEGINSEED) $(EOSPATH) $(LHEPRODSCRIPT)
 
-#requirements = (OpSysAndVer =?= "CentOS8")
-Requirements = HAS_SINGULARITY == True
-+SingularityImage = "/cvmfs/unpacked.cern.ch/registry.hub.docker.com/cmssw/el8:x86_64"
+## requirements = (OpSysAndVer =?= "CentOS8")
+# Requirements = HAS_SINGULARITY == True
+# +SingularityImage = "/cvmfs/unpacked.cern.ch/registry.hub.docker.com/cmssw/el8:x86_64"
+
+## for lxplus
+# MY.WantOS = "el8"
+# using el8 on lxplus reports an error; just use native el9
+
 request_cpus = 1
 request_memory = 2000
 use_x509userproxy = true
