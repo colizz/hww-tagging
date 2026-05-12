@@ -7,7 +7,7 @@ Executable = run_dnntuples.sh
 PROCABBR = infer_qcd800to1000
 PROCNAME = QCD_Bin-PT-800to1000_TuneCP5_13p6TeV_pythia8
 
-CMSRUNARGS = 'isTrainSample=0 addLowLevel=1 keepAllEvents=1'
+CMSRUNARGS = 'isTrainSample=0 addLowLevel=0 keepAllEvents=1'
 # send to IHEP T2
 EOSPATH = root://cceos.ihep.ac.cn//eos/ihep/cms/store/user/coli/dnntuples/v10p1_test/$(PROCNAME)/dnnTuples_$(Cluster)-$(Process).root
 

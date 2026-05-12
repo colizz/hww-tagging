@@ -7,7 +7,7 @@ Executable = run_dnntuples.sh
 PROCABBR = infer_z3bin
 PROCNAME = GluGluToBulkGravitonToZZ_13p6TeV_3PtBinForInfer_narrow
 
-CMSRUNARGS = 'isTrainSample=0 addLowLevel=1'
+CMSRUNARGS = 'isTrainSample=0 addLowLevel=0'
 # send to IHEP T2
 EOSPATH = root://cceos.ihep.ac.cn//eos/ihep/cms/store/user/coli/dnntuples/v10p1_test/$(PROCNAME)/dnnTuples_$(Cluster)-$(Process).root
 
