@@ -124,28 +124,28 @@ cmsDriver.py  --python_filename MiniAODv6_cfg.py --eventcontent MINIAODSIM --cus
 # Transfer file (MiniAODv6)
 xrdcp --silent -p -f miniv6.root $EOSPATH
 
-########### Start DNNTuples ############
+# ########### Start DNNTuples ############
 
-# use CMSSW_15_0_19
-WORKDIR_DNN=$WORKDIR/dnntuples
-mkdir -p $WORKDIR_DNN
-cd $WORKDIR_DNN
+# # use CMSSW_15_0_19
+# WORKDIR_DNN=$WORKDIR/dnntuples
+# mkdir -p $WORKDIR_DNN
+# cd $WORKDIR_DNN
 
-export SCRAM_ARCH=el8_amd64_gcc12
-scram p CMSSW CMSSW_15_0_19
-cd CMSSW_15_0_19/src
-eval `scram runtime -sh`
+# export SCRAM_ARCH=el8_amd64_gcc12
+# scram p CMSSW CMSSW_15_0_19
+# cd CMSSW_15_0_19/src
+# eval `scram runtime -sh`
 
-git clone https://github.com/colizz/DNNTuples.git DeepNTuples -b dev-nanov15
-scram b -j $NTHREAD
+# git clone https://github.com/colizz/DNNTuples.git DeepNTuples -b dev-nanov15
+# scram b -j $NTHREAD
 
-cd DeepNTuples/Ntupler/test/
-# run DNNTuples with 'isTrainSample=0 addLowLevel=1' for inference mode
-cmsRun DeepNtuplizerAK8.py inputFiles=file:${WORKDIR}/miniv6.root outputFile=${WORKDIR_DNN}/dnntuple.root isTrainSample=0 addLowLevel=1
+# cd DeepNTuples/Ntupler/test/
+# # run DNNTuples with 'isTrainSample=0 addLowLevel=1' for inference mode
+# cmsRun DeepNtuplizerAK8.py inputFiles=file:${WORKDIR}/miniv6.root outputFile=${WORKDIR_DNN}/dnntuple.root isTrainSample=0 addLowLevel=1
 
-# Transfer file (DNNTuple)
-xrdcp --silent -p -f ${WORKDIR_DNN}/dnntuple.root ${EOSPATH/miniv6/dnntuple}
+# # Transfer file (DNNTuple)
+# xrdcp --silent -p -f ${WORKDIR_DNN}/dnntuple.root ${EOSPATH/miniv6/dnntuple}
 
-########### End DNNTuples ############
+# ########### End DNNTuples ############
 
 touch dummy.cc
