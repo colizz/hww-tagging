@@ -1,0 +1,40 @@
+Universe   = vanilla
+Executable = run_and_transfer_ofc.sh
+
++ProjectName="cms.org.cern"
+
+# custom args (NEVENTLUMIBLOCK -> 500 as no need to change GEN config within run)
+NEVENT = 500
+NEVENTLUMIBLOCK = 500
+NTHREAD = 1
+PROCNAME = GluGluH-Hto2Tau_Bin-PT-200_Par-M-125_TuneCP5_13p6TeV_powhegMINLO-pythia8
+EOSPATH = root://eoscms.cern.ch//store/cmst3/group/vhcc/sfTuples/ext/$(PROCNAME)/24MiniAODv6/miniv6_$(Cluster)-$(Process).root
+
+# note: remember to change seeds if the GEN configs are exactly the same!
+BEGINSEED = 0
+
+Arguments = $(JOBNUM) $(NEVENT) $(NEVENTLUMIBLOCK) $(NTHREAD) $(PROCNAME) $(BEGINSEED) $(EOSPATH) $(LHEPRODSCRIPT)
+
+## requirements = (OpSysAndVer =?= "CentOS8")
+# Requirements = HAS_SINGULARITY == True
+# +SingularityImage = "/cvmfs/unpacked.cern.ch/registry.hub.docker.com/cmssw/el8:x86_64"
+
+## for lxplus
+# MY.WantOS = "el8"
+# using el8 on lxplus reports an error; just use native el9
+
+request_cpus = 1
+request_memory = 2000
+use_x509userproxy = true
+
++JobFlavour = "tomorrow"
+
+Log        = log/job.log_$(Cluster)
+Output     = log/job.out_$(Cluster)-$(Process)
+Error      = log/job.err_$(Cluster)-$(Process)
+
+should_transfer_files   = YES
+when_to_transfer_output = ON_EXIT_OR_EVICT
+transfer_output_files   = dummy.cc
+
+Queue JOBNUM from seq 1 2000 |

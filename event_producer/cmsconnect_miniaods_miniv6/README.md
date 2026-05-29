@@ -32,3 +32,5 @@ New setup for this miniv6 workflow, in `inputs/scripts`
 Submitted jobs, in `jdl/test`
  - submit_infer_[hig3bin,hww3bin,w3bin,z3bin,t3bin]
  - special note: new samples for BulkGrav to WW or ZZ, and massive Higgs (spin-0) to ttbar, produced for the first time (remember that in UL17 we use official BSM samples to collect W/Z/t jets)
+
+Also including H->tautau with pT>200 sample

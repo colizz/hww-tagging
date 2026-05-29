@@ -1,8 +1,9 @@
 #!/bin/bash -xe
 
 ## NOTE: difference w.r.t. standard run_and_transfer.sh script
-# 1. use GS_cfg.py!
-# 2. run NanoAOD step after MiniAOD, or run DNNTuples directly after MiniAOD
+# 1. use wmLHEGS_cfg.py instead of GS_cfg.py
+
+# this script mimic the official production routine
 
 sleep $(( ( RANDOM % 200 ) + 1 ))
 
@@ -45,19 +46,19 @@ cd $RELEASE/src
 eval `scram runtime -sh`
 CMSSW_BASE_ORIG=${CMSSW_BASE}
 
-# customize CMSSW code
+# # customize CMSSW code
 
-mkdir $CMSSW_BASE/src/GeneratorInterface
-cp -rf /cvmfs/cms.cern.ch/$SCRAM_ARCH/cms/cmssw/$CMSSW_VERSION/src/GeneratorInterface/{Core,LHEInterface} $CMSSW_BASE/src/GeneratorInterface/
-# copy customized LHE production script
-cp -f $WORKDIR/inputs/scripts/{lhe_modifier.py,run_instMG.sh} GeneratorInterface/LHEInterface/data/
-# use customized LHE production script, if specified
-if ! [ -z $LHEPRODSCRIPT ]; then
-  cp -f $WORKDIR/inputs/scripts/$LHEPRODSCRIPT GeneratorInterface/LHEInterface/data/
-  sed -i "s|run_generic_tarball_cvmfs.sh|${LHEPRODSCRIPT}|g" GeneratorInterface/Core/src/BaseHadronizer.cc
-else
-  sed -i "s|run_generic_tarball_cvmfs.sh|run_instMG.sh|g" GeneratorInterface/Core/src/BaseHadronizer.cc
-fi
+# mkdir $CMSSW_BASE/src/GeneratorInterface
+# cp -rf /cvmfs/cms.cern.ch/$SCRAM_ARCH/cms/cmssw/$CMSSW_VERSION/src/GeneratorInterface/{Core,LHEInterface} $CMSSW_BASE/src/GeneratorInterface/
+# # copy customized LHE production script
+# cp -f $WORKDIR/inputs/scripts/{lhe_modifier.py,run_instMG.sh} GeneratorInterface/LHEInterface/data/
+# # use customized LHE production script, if specified
+# if ! [ -z $LHEPRODSCRIPT ]; then
+#   cp -f $WORKDIR/inputs/scripts/$LHEPRODSCRIPT GeneratorInterface/LHEInterface/data/
+#   sed -i "s|run_generic_tarball_cvmfs.sh|${LHEPRODSCRIPT}|g" GeneratorInterface/Core/src/BaseHadronizer.cc
+# else
+#   sed -i "s|run_generic_tarball_cvmfs.sh|run_instMG.sh|g" GeneratorInterface/Core/src/BaseHadronizer.cc
+# fi
 
 # copy the fragment
 mkdir -p Configuration/GenProduction/python/
@@ -94,8 +95,8 @@ GLOBALTAG_SKIM=150X_mcRun3_2024_realistic_v2
 # need to specify seeds otherwise gridpacks will be chosen from the same routine!!
 # remember to identify process.RandomNumberGeneratorService.externalLHEProducer.initialSeed="int(${SEED})" and externalLHEProducer->generator!!
 
-cmsDriver.py Configuration/GenProduction/python/${PROCNAME}.py --python_filename GS_cfg.py --eventcontent RAWSIM --customise Configuration/DataProcessing/Utils.addMonitoring --datatier GEN-SIM --fileout file:gensim.root --conditions $GLOBALTAG --beamspot DBrealistic --customise_commands process.RandomNumberGeneratorService.generator.initialSeed="int(${SEED})"\\nprocess.source.numberEventsInLuminosityBlock="cms.untracked.uint32(${NEVENTLUMIBLOCK})" --step GEN,SIM --geometry DB:Extended --era Run3_2024 --mc --nThreads $NTHREAD -n $NEVENT || exit $? ;
-# cmsDriver.py Configuration/GenProduction/python/${PROCNAME}.py --python_filename wmLHEGS_cfg.py --eventcontent RAWSIM,LHE --customise Configuration/DataProcessing/Utils.addMonitoring --datatier GEN-SIM,LHE --fileout file:gensim.root --conditions $GLOBALTAG --beamspot DBrealistic --customise_commands process.RandomNumberGeneratorService.externalLHEProducer.initialSeed="int(${SEED})"\\nprocess.source.numberEventsInLuminosityBlock="cms.untracked.uint32(${NEVENTLUMIBLOCK})" --step LHE,GEN,SIM --geometry DB:Extended --era Run3_2024 --mc --nThreads $NTHREAD -n $NEVENT || exit $? ; # wmLHEGS step
+# cmsDriver.py Configuration/GenProduction/python/${PROCNAME}.py --python_filename GS_cfg.py --eventcontent RAWSIM --customise Configuration/DataProcessing/Utils.addMonitoring --datatier GEN-SIM --fileout file:gensim.root --conditions $GLOBALTAG --beamspot DBrealistic --customise_commands process.RandomNumberGeneratorService.generator.initialSeed="int(${SEED})"\\nprocess.source.numberEventsInLuminosityBlock="cms.untracked.uint32(${NEVENTLUMIBLOCK})" --step GEN,SIM --geometry DB:Extended --era Run3_2024 --mc --nThreads $NTHREAD -n $NEVENT || exit $? ;
+cmsDriver.py Configuration/GenProduction/python/${PROCNAME}.py --python_filename wmLHEGS_cfg.py --eventcontent RAWSIM,LHE --customise Configuration/DataProcessing/Utils.addMonitoring --datatier GEN-SIM,LHE --fileout file:gensim.root --conditions $GLOBALTAG --beamspot DBrealistic --customise_commands process.RandomNumberGeneratorService.externalLHEProducer.initialSeed="int(${SEED})"\\nprocess.source.numberEventsInLuminosityBlock="cms.untracked.uint32(${NEVENTLUMIBLOCK})" --step LHE,GEN,SIM --geometry DB:Extended --era Run3_2024 --mc --nThreads $NTHREAD -n $NEVENT || exit $? ; # wmLHEGS step
 
 # begin DRPremix
 # cmsDriver.py --python_filename DIGIPremix_cfg.py --eventcontent PREMIXRAW --customise Configuration/DataProcessing/Utils.addMonitoring --datatier GEN-SIM-DIGI --fileout file:digi.root --pileup_input "dbs:/Neutrino_E-10_gun/RunIISummer20ULPrePremix-UL17_140X_mcRun3_2024_realistic_v26-v3/PREMIX" --conditions 140X_mcRun3_2024_realistic_v26 --step DIGI,DATAMIX,L1,DIGI2RAW --procModifiers premix_stage2 --geometry DB:Extended --filein file:sim.root --datamix PreMix --era Run2_2017 --runUnscheduled --mc --nThreads $NTHREAD -n $NEVENT > digi.log 2>&1 || exit $? ; # too many output, log into file 
@@ -118,34 +119,11 @@ cd $WORKDIR
 # Run MiniAODv6
 cmsDriver.py  --python_filename MiniAODv6_cfg.py --eventcontent MINIAODSIM --customise Configuration/DataProcessing/Utils.addMonitoring --datatier MINIAODSIM --fileout file:miniv6.root --conditions $GLOBALTAG_SKIM --step PAT --geometry DB:Extended --filein file:reco.root --era Run3_2024 --mc --nThreads $NTHREAD -n $NEVENT || exit $? ;
 
-# # Run NanoAODv15
-# cmsDriver.py  --python_filename NanoAODv15_cfg.py --eventcontent NANOAODSIM1 --scenario pp --customise Configuration/DataProcessing/Utils.addMonitoring --datatier NANOAODSIM --fileout file:nanov15.root --conditions $GLOBALTAG_SKIM --step NANO --filein file:miniv6.root --era Run3_2024 --mc --nThreads $NTHREAD -n $NEVENT || exit $? ;
+# Run NanoAODv15
+cmsDriver.py  --python_filename NanoAODv15_cfg.py --eventcontent NANOAODSIM1 --scenario pp --customise Configuration/DataProcessing/Utils.addMonitoring --datatier NANOAODSIM --fileout file:nanov15.root --conditions $GLOBALTAG_SKIM --step NANO --filein file:miniv6.root --era Run3_2024 --mc --nThreads $NTHREAD -n $NEVENT || exit $? ;
 
-# Transfer file (MiniAODv6)
+# Transfer file
 xrdcp --silent -p -f miniv6.root $EOSPATH
-
-# ########### Start DNNTuples ############
-
-# # use CMSSW_15_0_19
-# WORKDIR_DNN=$WORKDIR/dnntuples
-# mkdir -p $WORKDIR_DNN
-# cd $WORKDIR_DNN
-
-# export SCRAM_ARCH=el8_amd64_gcc12
-# scram p CMSSW CMSSW_15_0_19
-# cd CMSSW_15_0_19/src
-# eval `scram runtime -sh`
-
-# git clone https://github.com/colizz/DNNTuples.git DeepNTuples -b dev-nanov15
-# scram b -j $NTHREAD
-
-# cd DeepNTuples/Ntupler/test/
-# # run DNNTuples with 'isTrainSample=0 addLowLevel=1' for inference mode
-# cmsRun DeepNtuplizerAK8.py inputFiles=file:${WORKDIR}/miniv6.root outputFile=${WORKDIR_DNN}/dnntuple.root isTrainSample=0 addLowLevel=1
-
-# # Transfer file (DNNTuple)
-# xrdcp --silent -p -f ${WORKDIR_DNN}/dnntuple.root ${EOSPATH/miniv6/dnntuple}
-
-# ########### End DNNTuples ############
+xrdcp --silent -p -f nanov15.root ${EOSPATH/miniv6/nanov15}
 
 touch dummy.cc
